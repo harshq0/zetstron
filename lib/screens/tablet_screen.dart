@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zetstron/themes/app_text_style.dart';
 import 'package:zetstron/themes/app_theme.dart';
 import 'package:zetstron/utils/constant.dart';
@@ -22,6 +23,7 @@ class _TabletScreenState extends State<TabletScreen> {
   bool isHovering = false;
   int isServiceHover = -1;
   final GlobalKey globalKey = GlobalKey();
+  final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -123,37 +125,37 @@ class _TabletScreenState extends State<TabletScreen> {
 
   List<Map<String, dynamic>> product = [
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Tag',
       'description':
           'AI-powered recruitment that simplifies hiring and accelerates onboarding',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Employee',
       'description':
           'Central hub to manage, track, and empower your workforce.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Projects',
       'description':
           '360° visibility across projects in Telecom, Retail, Banking, and more.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'HR',
       'description':
           'Streamlined HR operations from payroll to performance management.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Customer',
       'description':
           'Unified client repository to manage relationships and boost engagement.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Models',
       'description':
           'Seamless integration with AI tools like Copilot and ChatGPT for faster outcomes.',
@@ -175,142 +177,171 @@ class _TabletScreenState extends State<TabletScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          child: Container(
-            width: fullWidth / 3,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(26),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Let's",
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.manrope().fontFamily,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.buttonColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Connect",
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.manrope().fontFamily,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  AutoSizeText(
-                    'Full Name',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Full Name',
-                    imagePath: 'assets/png/user.png',
-                    controller: nameController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Contact Number',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Contact Number',
-                    imagePath: 'assets/png/call.png',
-                    controller: numberController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Email Id',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Email ID',
-                    imagePath: 'assets/png/mail.png',
-                    controller: emailController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Description',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    maxLines: 3,
-                    hintText: 'Enter your descrtiption',
-                    imagePath: '',
-                    controller: descriptionController,
-                  ),
-                  SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () {
-                      sendMailDirect(
-                        name: nameController.text,
-                        number: numberController.text,
-                        email: emailController.text,
-                        description: descriptionController.text,
-                        // body: bodyController.text,
-                        // name: nameController.text,
-                        // number: numberController.text,
-
-                        // description: descriptionController.text,
-                      );
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: fullWidth,
-                      decoration: BoxDecoration(
-                        color: Color(0xffFE6225),
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        child: Center(
-                          child: AutoSizeText(
-                            "Let's Talk",
+        return Form(
+          key: _formKey,
+          child: Dialog(
+            child: Container(
+              width: fullWidth / 1.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(26),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Let's",
                             style: TextStyle(
                               fontFamily: GoogleFonts.manrope().fontFamily,
-                              fontSize: 16,
+                              fontSize: 32,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppTheme.buttonColor,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Connect",
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.manrope().fontFamily,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    AutoSizeText(
+                      'Full Name',
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.manrope().fontFamily,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    contactField(
+                      hintText: 'Enter Full Name',
+                      imagePath: 'assets/png/user.png',
+                      controller: nameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    AutoSizeText(
+                      'Contact Number',
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.manrope().fontFamily,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    contactField(
+                      hintText: 'Enter Contact Number',
+                      imagePath: 'assets/png/call.png',
+                      controller: numberController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your contact number';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    AutoSizeText(
+                      'Email Id',
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.manrope().fontFamily,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    contactField(
+                      hintText: 'Enter Email ID',
+                      imagePath: 'assets/png/mail.png',
+                      controller: emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        } else if (!RegExp(
+                          r'^[^@]+@[^@]+\.[^@]+',
+                        ).hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    AutoSizeText(
+                      'Description',
+                      style: TextStyle(
+                        fontFamily: GoogleFonts.manrope().fontFamily,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    contactField(
+                      maxLines: 3,
+                      hintText: 'Enter your descrtiption',
+                      imagePath: '',
+                      controller: descriptionController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter description';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_formKey.currentState!.validate()) {
+                            openGmailWeb(
+                              toEmail: 'vijayganesh1704@gmail.com',
+                              body: descriptionController.text,
+                              subject: bodyController.text,
+                            );
+                            Navigator.pop(context);
+                          }
+                        });
+                      },
+                      child: Container(
+                        width: fullWidth,
+                        decoration: BoxDecoration(
+                          color: Color(0xffFE6225),
+                          borderRadius: BorderRadius.circular(9),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          child: Center(
+                            child: AutoSizeText(
+                              "Let's Talk",
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.manrope().fontFamily,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -319,45 +350,22 @@ class _TabletScreenState extends State<TabletScreen> {
     );
   }
 
-  Future<void> sendMailDirect({
-    required String name,
-    required String email,
-    required String number,
-    required String description,
+  Future<void> openGmailWeb({
+    required String toEmail,
+    required String subject,
+    required String body,
   }) async {
-    const serviceId = "your_service_id";
-    const templateId = "your_template_id";
-    const userId = "your_public_key";
-
-    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
-    final response = await http.post(
-      url,
-      // headers: {
-      //   "origin": "http://localhost",
-      //   "Content-Type": "application/json",
-      // },
-      body: json.encode({
-        "service_id": serviceId,
-        "template_id": templateId,
-        "user_id": userId,
-        "template_params": {
-          "user_name": name,
-          "user_email": email,
-          "user_number": number,
-          "message": description,
-        },
-      }),
+    final Uri gmailUrl = Uri.parse(
+      'https://mail.google.com/mail/?view=cm&fs=1'
+      '&to=$toEmail'
+      '&su=${Uri.encodeComponent(subject)}'
+      '&body=${Uri.encodeComponent(body)}',
     );
 
-    if (response.statusCode == 200) {
-      nameController.clear();
-      emailController.clear();
-      numberController.clear();
-      descriptionController.clear();
-
-      print("✅ Email sent successfully!");
+    if (await canLaunchUrl(gmailUrl)) {
+      await launchUrl(gmailUrl, mode: LaunchMode.externalApplication);
     } else {
-      print("❌ Failed: ${response.body}");
+      throw 'Could not open Gmail';
     }
   }
 
@@ -386,12 +394,12 @@ class _TabletScreenState extends State<TabletScreen> {
                 title: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 40,
-                    horizontal: 10,
+                    horizontal: 5,
                   ),
                   child: Row(
                     spacing: 30,
                     children: [
-                      Image.asset('assets/png/zetstron-logo.png', height: 40),
+                      Image.asset('assets/png/zetstron-logo.png', height: 35),
                       Row(
                         children: [
                           appBarText(
@@ -745,7 +753,7 @@ class _TabletScreenState extends State<TabletScreen> {
                               title == 'Services' ||
                               title == 'Contact Us')
                           ? SizedBox()
-                          : SizedBox(height: 240),
+                          : SizedBox(height: 150),
 
                       (title == 'About Us' ||
                               title == 'Our Products' ||
@@ -796,7 +804,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                 child: Column(
                                   children: [
                                     CustomContainer(
-                                      width: fullWidth / 1.2,
+                                      width: fullWidth / 1.6,
                                       padding: EdgeInsets.only(
                                         top: 30,
                                         left: 30,
@@ -814,7 +822,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         spacing: 20,
                                         children: [
                                           AutoSizeText(
@@ -843,7 +851,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.2,
+                                      width: fullWidth / 1.6,
                                       padding: EdgeInsets.only(
                                         top: 30,
                                         left: 30,
@@ -861,7 +869,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                             ),
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 AutoSizeText(
                                                   'Fixed-Price Project',
@@ -891,7 +899,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.2,
+                                      width: fullWidth / 1.6,
                                       padding: EdgeInsets.only(
                                         top: 30,
                                         left: 30,
@@ -901,7 +909,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                       color: Color(0xffF0F0F0),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           AutoSizeText(
                                             'Managed Delivery',
@@ -927,7 +935,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.2,
+                                      width: fullWidth / 1.6,
                                       padding: EdgeInsets.only(
                                         top: 30,
                                         left: 30,
@@ -945,7 +953,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                       ),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         spacing: 20,
                                         children: [
                                           AutoSizeText(
@@ -1076,114 +1084,170 @@ class _TabletScreenState extends State<TabletScreen> {
                                       SizedBox(height: 50),
                                       Padding(
                                         padding: const EdgeInsets.all(0.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            AutoSizeText(
-                                              'Full Name',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Full Name',
-                                              imagePath: 'assets/png/user.png',
-                                              controller: nameController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Contact Number',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Contact Number',
-                                              imagePath: 'assets/png/call.png',
-                                              controller: numberController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Email Id',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Email ID',
-                                              imagePath: 'assets/png/mail.png',
-                                              controller: emailController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Description',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              maxLines: 5,
-                                              hintText:
-                                                  'Enter your descrtiption',
-                                              imagePath: '',
-                                              controller: descriptionController,
-                                            ),
-                                            SizedBox(height: 30),
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {});
-                                              },
-                                              child: Container(
-                                                width: fullWidth,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffFE6225),
-                                                  borderRadius:
-                                                      BorderRadius.circular(9),
+                                        child: Form(
+                                          key: _formKey,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              AutoSizeText(
+                                                'Full Name',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        vertical: 15.0,
-                                                      ),
-                                                  child: Center(
-                                                    child: AutoSizeText(
-                                                      "Let's Talk",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            GoogleFonts.manrope()
-                                                                .fontFamily,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText: 'Enter Your Name',
+                                                imagePath:
+                                                    'assets/png/user.png',
+                                                controller: nameController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter your name';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Contact Number',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText:
+                                                    'Enter Contact Number',
+                                                imagePath:
+                                                    'assets/png/call.png',
+                                                controller: numberController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter your contact number';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Email Id',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText: 'Enter Email ID',
+                                                imagePath:
+                                                    'assets/png/mail.png',
+                                                controller: emailController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter your email';
+                                                  } else if (!RegExp(
+                                                    r'^[^@]+@[^@]+\.[^@]+',
+                                                  ).hasMatch(value)) {
+                                                    return 'Please enter a valid email address';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Description',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                maxLines: 5,
+                                                hintText:
+                                                    'Enter your descrtiption',
+                                                imagePath: '',
+                                                controller:
+                                                    descriptionController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter description';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 30),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      openGmailWeb(
+                                                        toEmail:
+                                                            'vijayganesh1704@gmail.com',
+                                                        body:
+                                                            descriptionController
+                                                                .text,
+                                                        subject:
+                                                            bodyController.text,
+                                                      );
+                                                      Navigator.pop(context);
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  width: fullWidth,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFE6225),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          9,
+                                                        ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 15.0,
+                                                        ),
+                                                    child: Center(
+                                                      child: AutoSizeText(
+                                                        "Let's Talk",
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              GoogleFonts.manrope()
+                                                                  .fontFamily,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -1467,7 +1531,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                   ),
                                 ],
                               ),
-                          title == 'Home' ? SizedBox(height: 50) : SizedBox(),
+                          title == 'Home' ? SizedBox(height: 80) : SizedBox(),
                           (title == 'About Us' ||
                                   title == 'Services' ||
                                   title == 'Contact Us')
@@ -1477,10 +1541,15 @@ class _TabletScreenState extends State<TabletScreen> {
                               ? SizedBox(height: 150)
                               : SizedBox(height: 50),
                           (title == 'About Us')
-                              ? Image.asset(
-                                'assets/png/vision-mission.png',
-                                // height: 800,
-                                fit: BoxFit.contain,
+                              ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 30.0,
+                                ),
+                                child: Image.asset(
+                                  'assets/png/vision-mission.png',
+                                  // height: 800,
+                                  fit: BoxFit.contain,
+                                ),
                               )
                               : SizedBox(),
 
@@ -1627,6 +1696,9 @@ class _TabletScreenState extends State<TabletScreen> {
                               )
                               : SizedBox(),
                           title == 'Home' ? SizedBox(height: 80) : SizedBox(),
+                          title == 'Our Products'
+                              ? SizedBox(height: 80)
+                              : SizedBox(),
                           (title == 'About Us' ||
                                   title == 'Services' ||
                                   title == 'Contact Us')
@@ -1705,7 +1777,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                                 height: 60,
                                                 width: 60,
                                                 decoration: BoxDecoration(
-                                                  color: Color(0xffFE6225),
+                                                  color: Colors.white,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                         100,
@@ -1763,7 +1835,11 @@ class _TabletScreenState extends State<TabletScreen> {
                                   ),
                                 ),
                               ),
-                          SizedBox(height: 100),
+                          (title == 'Home' ||
+                                  title == 'About Us' ||
+                                  title == 'Our Products')
+                              ? SizedBox(height: 140)
+                              : SizedBox(),
                           Stack(
                             children: [
                               Image.asset(
@@ -1773,7 +1849,7 @@ class _TabletScreenState extends State<TabletScreen> {
                               ),
                               Column(
                                 children: [
-                                  SizedBox(height: 50),
+                                  // SizedBox(height: 50),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -2210,7 +2286,7 @@ class _TabletScreenState extends State<TabletScreen> {
       ),
       decoration: InputDecoration(
         prefixIcon:
-            imagePath != ''
+            (imagePath != '' || imagePath!.isNotEmpty)
                 ? SizedBox(
                   height: 20,
                   width: 20,
@@ -2222,12 +2298,16 @@ class _TabletScreenState extends State<TabletScreen> {
                     ),
                   ),
                 )
-                : SizedBox(),
+                : null,
         hintText: hintText,
         hintStyle: TextStyle(
           fontFamily: GoogleFonts.manrope().fontFamily,
           fontSize: 16,
           fontWeight: FontWeight.w500,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -2282,7 +2362,7 @@ class _TabletScreenState extends State<TabletScreen> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Image.asset('assets/png/$mediaName.png', height: 60),
+      child: Image.asset('assets/png/$mediaName.png', height: 50),
     );
   }
 

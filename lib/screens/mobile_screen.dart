@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zetstron/themes/app_text_style.dart';
 import 'package:zetstron/themes/app_theme.dart';
 import 'package:zetstron/utils/constant.dart';
@@ -22,6 +23,7 @@ class _MobileScreenState extends State<MobileScreen> {
   bool isHovering = false;
   int isServiceHover = -1;
   final GlobalKey globalKey = GlobalKey();
+  final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -122,37 +124,37 @@ class _MobileScreenState extends State<MobileScreen> {
   ];
   List<Map<String, dynamic>> product = [
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Tag',
       'description':
           'AI-powered recruitment that simplifies hiring and accelerates onboarding',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Employee',
       'description':
           'Central hub to manage, track, and empower your workforce.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Projects',
       'description':
           '360° visibility across projects in Telecom, Retail, Banking, and more.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'HR',
       'description':
           'Streamlined HR operations from payroll to performance management.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Customer',
       'description':
           'Unified client repository to manage relationships and boost engagement.',
     },
     {
-      'imagePath': 'assets/png/person.png',
+      'imagePath': 'assets/png/z-product.png',
       'title': 'Models',
       'description':
           'Seamless integration with AI tools like Copilot and ChatGPT for faster outcomes.',
@@ -170,194 +172,22 @@ class _MobileScreenState extends State<MobileScreen> {
     }
   }
 
-  void sendEnquiry() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: Container(
-            height: fullHeight / 1.3,
-            width: fullWidth,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(26),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "Let's",
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.manrope().fontFamily,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.buttonColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "Connect",
-                          style: TextStyle(
-                            fontFamily: GoogleFonts.manrope().fontFamily,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  AutoSizeText(
-                    'Full Name',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Full Name',
-                    imagePath: 'assets/png/user.png',
-                    controller: nameController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Contact Number',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Contact Number',
-                    imagePath: 'assets/png/call.png',
-                    controller: numberController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Email Id',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    hintText: 'Enter Email ID',
-                    imagePath: 'assets/png/mail.png',
-                    controller: emailController,
-                  ),
-                  SizedBox(height: 20),
-                  AutoSizeText(
-                    'Description',
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.manrope().fontFamily,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  contactField(
-                    maxLines: 3,
-                    hintText: 'Enter your descrtiption',
-                    imagePath: '',
-                    controller: descriptionController,
-                  ),
-                  SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () {
-                      sendMailDirect(
-                        name: nameController.text,
-                        number: numberController.text,
-                        email: emailController.text,
-                        description: descriptionController.text,
-                        // body: bodyController.text,
-                        // name: nameController.text,
-                        // number: numberController.text,
-
-                        // description: descriptionController.text,
-                      );
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: fullWidth,
-                      decoration: BoxDecoration(
-                        color: Color(0xffFE6225),
-                        borderRadius: BorderRadius.circular(9),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15.0),
-                        child: Center(
-                          child: AutoSizeText(
-                            "Let's Talk",
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.manrope().fontFamily,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> sendMailDirect({
-    required String name,
-    required String email,
-    required String number,
-    required String description,
+  Future<void> openGmailWeb({
+    required String toEmail,
+    required String subject,
+    required String body,
   }) async {
-    const serviceId = "your_service_id";
-    const templateId = "your_template_id";
-    const userId = "your_public_key";
-
-    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
-    final response = await http.post(
-      url,
-      // headers: {
-      //   "origin": "http://localhost",
-      //   "Content-Type": "application/json",
-      // },
-      body: json.encode({
-        "service_id": serviceId,
-        "template_id": templateId,
-        "user_id": userId,
-        "template_params": {
-          "user_name": name,
-          "user_email": email,
-          "user_number": number,
-          "message": description,
-        },
-      }),
+    final Uri gmailUrl = Uri.parse(
+      'https://mail.google.com/mail/?view=cm&fs=1'
+      '&to=$toEmail'
+      '&su=${Uri.encodeComponent(subject)}'
+      '&body=${Uri.encodeComponent(body)}',
     );
 
-    if (response.statusCode == 200) {
-      nameController.clear();
-      emailController.clear();
-      numberController.clear();
-      descriptionController.clear();
-
-      print("✅ Email sent successfully!");
+    if (await canLaunchUrl(gmailUrl)) {
+      await launchUrl(gmailUrl, mode: LaunchMode.externalApplication);
     } else {
-      print("❌ Failed: ${response.body}");
+      throw 'Could not open Gmail';
     }
   }
 
@@ -386,12 +216,12 @@ class _MobileScreenState extends State<MobileScreen> {
                 title: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 20,
-                    horizontal: 20,
+                    horizontal: 0,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset('assets/png/zetstron-logo.png', height: 35),
+                      Image.asset('assets/png/zetstron-logo.png', height: 30),
                       PopupMenuButton(
                         color: Color(0xffFAFAFA),
                         icon: Icon(Icons.menu_outlined),
@@ -548,11 +378,11 @@ class _MobileScreenState extends State<MobileScreen> {
                               left:
                                   (title == 'Our Products' ||
                                           title == 'Services')
-                                      ? fullWidth * 0.22
+                                      ? fullWidth * 0.10
                                       : (title == 'About Us' ||
                                           title == 'Contact Us')
-                                      ? fullWidth * 0.25
-                                      : fullWidth / 6,
+                                      ? fullWidth * 0.10
+                                      : fullWidth / 30,
                               top:
                                   title == 'Contact Us'
                                       ? fullHeight / 9
@@ -685,7 +515,7 @@ class _MobileScreenState extends State<MobileScreen> {
 
                                               style:
                                                   AppTextStyle.headingTextStyle(
-                                                    fontSize: 25,
+                                                    fontSize: 24,
                                                     color: Colors.black,
                                                   ),
                                             ),
@@ -693,7 +523,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                               text: 'Business\nTransformation ',
                                               style:
                                                   AppTextStyle.headingTextStyle(
-                                                    fontSize: 25,
+                                                    fontSize: 24,
                                                     color: Color(0xffFE6225),
                                                   ),
                                             ),
@@ -702,7 +532,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   'with AI, Cloud\n       & Product Innovation',
                                               style:
                                                   AppTextStyle.headingTextStyle(
-                                                    fontSize: 25,
+                                                    fontSize: 24,
                                                     color: Colors.black,
                                                   ),
                                             ),
@@ -839,7 +669,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                 title == 'Services' ||
                                 title == 'Contact Us')
                             ? SizedBox()
-                            : SizedBox(height: 140),
+                            : SizedBox(height: 100),
 
                         (title == 'About Us' ||
                                 title == 'Our Products' ||
@@ -853,14 +683,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                     text: '        ZETSTRON\n',
 
                                     style: AppTextStyle.headingTextStyle(
-                                      fontSize: 38,
+                                      fontSize: 30,
                                       color: Color(0xffFE6225),
                                     ),
                                   ),
                                   TextSpan(
                                     text: 'Engagement models ',
                                     style: AppTextStyle.headingTextStyle(
-                                      fontSize: 38,
+                                      fontSize: 30,
                                       color: Colors.black,
                                     ),
                                   ),
@@ -873,7 +703,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                 title == 'Services' ||
                                 title == 'Contact Us')
                             ? SizedBox()
-                            : SizedBox(height: 140),
+                            : SizedBox(height: 50),
                         Column(
                           children: [
                             (title == 'About Us' ||
@@ -891,10 +721,10 @@ class _MobileScreenState extends State<MobileScreen> {
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 30,
-                                          left: 30,
-                                          right: 30,
-                                          bottom: 30,
+                                          top: 10,
+                                          left: 20,
+                                          right: 20,
+                                          bottom: 10,
                                         ),
                                         gradient: LinearGradient(
                                           begin: Alignment.centerLeft,
@@ -907,7 +737,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                         ),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           spacing: 30,
                                           children: [
                                             Image.asset(
@@ -915,7 +745,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                               height: 200,
                                             ),
                                             AutoSizeText(
-                                              'Dedicated Offshore Team\n(Staff Augmentation)',
+                                              'Dedicated Offshore Team (Staff Augmentation)',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
                                                     fontSize: 18,
@@ -924,7 +755,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             ),
 
                                             AutoSizeText(
-                                              'Access top-tier developers, architects, QA,\nand project managers — seamlessly\nintegrated into your workflows',
+                                              'Access top-tier developers, architects, QA, and project managers — seamlessly integrated into your workflows',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.container1TextStyle(
                                                     color: Color(0xffE9E9E9),
@@ -933,14 +765,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 20),
+                                      SizedBox(height: 10),
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 30,
-                                          left: 30,
-                                          right: 30,
-                                          bottom: 30,
+                                          top: 10,
+                                          left: 10,
+                                          right: 10,
+                                          bottom: 10,
                                         ),
                                         color: Color(0xffF0F0F0),
                                         child: Column(
@@ -956,14 +788,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                    horizontal: 30.0,
+                                                    horizontal: 20.0,
                                                   ),
                                               child: Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   AutoSizeText(
                                                     'Fixed-Price Project',
+                                                    textAlign: TextAlign.center,
                                                     style:
                                                         AppTextStyle.containerTextStyle(
                                                           fontSize: 18,
@@ -972,7 +805,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   ),
                                                   SizedBox(height: 10),
                                                   AutoSizeText(
-                                                    'Get results quickly with a short, fixed-\nprice project covering key features,\nmigrations, or proof-of-concepts.',
+                                                    'Get results quickly with a short, fixed-price project covering key features,migrations, or proof-of-concepts.',
+                                                    textAlign: TextAlign.center,
                                                     style:
                                                         AppTextStyle.container1TextStyle(
                                                           color: Colors.black,
@@ -984,19 +818,19 @@ class _MobileScreenState extends State<MobileScreen> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 20),
+                                      SizedBox(height: 10),
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 30,
-                                          left: 30,
-                                          right: 30,
-                                          bottom: 30,
+                                          top: 10,
+                                          left: 10,
+                                          right: 10,
+                                          bottom: 10,
                                         ),
                                         color: Color(0xffF0F0F0),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Image.asset(
                                               'assets/png/time.png',
@@ -1005,6 +839,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                             SizedBox(height: 15),
                                             AutoSizeText(
                                               'Managed Delivery',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
                                                     fontSize: 25,
@@ -1013,7 +848,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             ),
                                             SizedBox(height: 10),
                                             AutoSizeText(
-                                              'Guaranteed outcomes with SLAs,\nproactive monitoring, and 24/7 support.',
+                                              'Guaranteed outcomes with SLAs, proactive monitoring, and 24/7 support.',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.container1TextStyle(
                                                     color: Colors.black,
@@ -1022,14 +858,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 20),
+                                      SizedBox(height: 10),
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 30,
-                                          left: 30,
-                                          right: 30,
-                                          bottom: 30,
+                                          top: 10,
+                                          left: 10,
+                                          right: 10,
+                                          bottom: 10,
                                         ),
                                         gradient: LinearGradient(
                                           begin: Alignment.centerLeft,
@@ -1042,7 +878,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                         ),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.center,
                                           spacing: 30,
                                           children: [
                                             Image.asset(
@@ -1050,7 +886,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                               height: 200,
                                             ),
                                             AutoSizeText(
-                                              'White-Label Product\nEngineering)',
+                                              'White-Label Product Engineering)',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
                                                     fontSize: 18,
@@ -1059,7 +896,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             ),
 
                                             AutoSizeText(
-                                              'End-to-end product development\nunder your brand — scale SaaS\nwithout scaling headcount.',
+                                              'End-to-end product development under your brand — scale SaaS without scaling headcount.',
+                                              textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.container1TextStyle(
                                                     color: Color(0xffE9E9E9),
@@ -1072,13 +910,13 @@ class _MobileScreenState extends State<MobileScreen> {
                                   ),
                                 ),
                             (title == 'Contact Us')
-                                ? SizedBox(height: 160)
+                                ? SizedBox(height: 80)
                                 : SizedBox(),
                             (title == 'Contact Us')
                                 ? Container(
                                   width: fullWidth / 1.1,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(40),
+                                    borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color: Color(0xffEDE7E5),
                                     ),
@@ -1096,194 +934,258 @@ class _MobileScreenState extends State<MobileScreen> {
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        AutoSizeText.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: 'Ready',
-                                                style:
-                                                    AppTextStyle.communityTextStyle(
-                                                      fontSize: 30,
-                                                      color: Color(0xffFE6225),
-                                                    ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    'to\nstart your journey\nwith us?',
-                                                style:
-                                                    AppTextStyle.communityTextStyle(
-                                                      fontSize: 30,
-                                                      color: Colors.black,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 30),
-                                        AutoSizeText(
-                                          'Address: ',
-                                          style: AppTextStyle.contactTextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(height: 12),
-                                        AutoSizeText(
-                                          'E-101 Palm Riviera, Tmvm Main Road,\nSIPCOT Industrial Area, Thirumudivakkam,\nChennai -600044, Tamil Nadu',
-                                          style:
-                                              AppTextStyle.contactDetailsTextStyle(
-                                                fontSize: 10,
-                                                color: Color(0xff323131),
-                                              ),
-                                        ),
-                                        SizedBox(height: 20),
-                                        AutoSizeText(
-                                          'Contact Us',
-                                          style: AppTextStyle.contactTextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(height: 6),
-                                        AutoSizeText.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: 'Mob No :',
-                                                style:
-                                                    AppTextStyle.contactDetailsTextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xff646464),
-                                                    ),
-                                              ),
-                                              TextSpan(
-                                                text: '+91 9894815480',
-                                                style:
-                                                    AppTextStyle.contactDetailsTextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xff323131),
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 30),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            AutoSizeText(
-                                              'Full Name',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Full Name',
-                                              imagePath: 'assets/png/user.png',
-                                              controller: nameController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Contact Number',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Contact Number',
-                                              imagePath: 'assets/png/call.png',
-                                              controller: numberController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Email Id',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              hintText: 'Enter Email ID',
-                                              imagePath: 'assets/png/mail.png',
-                                              controller: emailController,
-                                            ),
-                                            SizedBox(height: 20),
-                                            AutoSizeText(
-                                              'Description',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    GoogleFonts.manrope()
-                                                        .fontFamily,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 5),
-                                            contactField(
-                                              maxLines: 5,
-                                              hintText:
-                                                  'Enter your descrtiption',
-                                              imagePath: '',
-                                              controller: descriptionController,
-                                            ),
-                                            SizedBox(height: 30),
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {});
-                                              },
-                                              child: Container(
-                                                width: fullWidth,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xffFE6225),
-                                                  borderRadius:
-                                                      BorderRadius.circular(9),
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        vertical: 15.0,
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          AutoSizeText.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'Ready',
+                                                  style:
+                                                      AppTextStyle.communityTextStyle(
+                                                        fontSize: 30,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
                                                       ),
-                                                  child: Center(
-                                                    child: AutoSizeText(
-                                                      "Let's Talk",
-                                                      style: TextStyle(
-                                                        fontFamily:
-                                                            GoogleFonts.manrope()
-                                                                .fontFamily,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
+                                                ),
+                                                TextSpan(
+                                                  text:
+                                                      'to\nstart your journey\nwith us?',
+                                                  style:
+                                                      AppTextStyle.communityTextStyle(
+                                                        fontSize: 30,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 30),
+                                          AutoSizeText(
+                                            'Address: ',
+                                            style:
+                                                AppTextStyle.contactTextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          SizedBox(height: 12),
+                                          AutoSizeText(
+                                            'E-101 Palm Riviera, Tmvm Main Road,\nSIPCOT Industrial Area, Thirumudivakkam,\nChennai -600044, Tamil Nadu',
+                                            style:
+                                                AppTextStyle.contactDetailsTextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xff323131),
+                                                ),
+                                          ),
+                                          SizedBox(height: 20),
+                                          AutoSizeText(
+                                            'Contact Us',
+                                            style:
+                                                AppTextStyle.contactTextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          SizedBox(height: 6),
+                                          AutoSizeText.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'Mob No :',
+                                                  style:
+                                                      AppTextStyle.contactDetailsTextStyle(
+                                                        fontSize: 13,
+                                                        color: Color(
+                                                          0xff646464,
+                                                        ),
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: '+91 9894815480',
+                                                  style:
+                                                      AppTextStyle.contactDetailsTextStyle(
+                                                        fontSize: 13,
+                                                        color: Color(
+                                                          0xff323131,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 30),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              AutoSizeText(
+                                                'Full Name',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText: 'Enter Full Name',
+                                                imagePath:
+                                                    'assets/png/user.png',
+                                                controller: nameController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter your name';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Contact Number',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText:
+                                                    'Enter Contact Number',
+                                                imagePath:
+                                                    'assets/png/call.png',
+                                                controller: numberController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter contact number';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Email Id',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                hintText: 'Enter Email ID',
+                                                imagePath:
+                                                    'assets/png/mail.png',
+                                                controller: emailController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter your email';
+                                                  } else if (!RegExp(
+                                                    r'^[^@]+@[^@]+\.[^@]+',
+                                                  ).hasMatch(value)) {
+                                                    return 'Please enter a valid email address';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 20),
+                                              AutoSizeText(
+                                                'Description',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                      GoogleFonts.manrope()
+                                                          .fontFamily,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              contactField(
+                                                maxLines: 5,
+                                                hintText:
+                                                    'Enter your descrtiption',
+                                                imagePath: '',
+                                                controller:
+                                                    descriptionController,
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please enter some text';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                              SizedBox(height: 30),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (_formKey.currentState!
+                                                        .validate()) {
+                                                      openGmailWeb(
+                                                        toEmail:
+                                                            'vijayganesh1704@gmail.com',
+                                                        body:
+                                                            descriptionController
+                                                                .text,
+                                                        subject:
+                                                            bodyController.text,
+                                                      );
+                                                      Navigator.pop(context);
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  width: fullWidth,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xffFE6225),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          9,
+                                                        ),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 15.0,
+                                                        ),
+                                                    child: Center(
+                                                      child: AutoSizeText(
+                                                        "Let's Talk",
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              GoogleFonts.manrope()
+                                                                  .fontFamily,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 )
@@ -1306,21 +1208,21 @@ class _MobileScreenState extends State<MobileScreen> {
                                         text: 'Our Services to Power\n',
 
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 33,
+                                          fontSize: 28,
                                           color: Colors.black,
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Your ',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 33,
+                                          fontSize: 28,
                                           color: Colors.black,
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Digital Journey.',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 33,
+                                          fontSize: 28,
                                           color: Color(0xffFE6225),
                                         ),
                                       ),
@@ -1339,7 +1241,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                     horizontal: 20,
                                   ),
                                   child: SizedBox(
-                                    height: 4900,
+                                    height: 4350,
                                     child: GridView.builder(
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
@@ -1347,7 +1249,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                             crossAxisSpacing: 26,
                                             mainAxisSpacing: 20,
                                             // childAspectRatio: serviceHeight,
-                                            mainAxisExtent: 480,
+                                            mainAxisExtent: 460,
                                           ),
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: services.length,
@@ -1440,18 +1342,27 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 SizedBox(height: 38),
                                                 AutoSizeText(
                                                   services[index]['title'],
-                                                  style:
-                                                      AppTextStyle.serviceTitleTextStyle(
-                                                        color: Colors.black,
-                                                      ),
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontFamily:
+                                                        GoogleFonts.manrope()
+                                                            .fontFamily,
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
                                                 SizedBox(height: 16),
                                                 AutoSizeText(
                                                   services[index]['description'],
-                                                  style:
-                                                      AppTextStyle.serviceSubTitleTextStyle(
-                                                        color: Colors.black,
-                                                      ),
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily:
+                                                        GoogleFonts.manrope()
+                                                            .fontFamily,
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
                                                 SizedBox(height: 20),
                                                 Row(
@@ -1463,10 +1374,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     ),
                                                     AutoSizeText(
                                                       services[index]['point1'],
-                                                      style:
-                                                          AppTextStyle.serviceSubTitleTextStyle(
-                                                            color: Colors.black,
-                                                          ),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            GoogleFonts.manrope()
+                                                                .fontFamily,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -1479,10 +1395,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     ),
                                                     AutoSizeText(
                                                       services[index]['point2'],
-                                                      style:
-                                                          AppTextStyle.serviceSubTitleTextStyle(
-                                                            color: Colors.black,
-                                                          ),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            GoogleFonts.manrope()
+                                                                .fontFamily,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -1495,10 +1416,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     ),
                                                     AutoSizeText(
                                                       services[index]['point3'],
-                                                      style:
-                                                          AppTextStyle.serviceSubTitleTextStyle(
-                                                            color: Colors.black,
-                                                          ),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            GoogleFonts.manrope()
+                                                                .fontFamily,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -1511,10 +1437,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     ),
                                                     AutoSizeText(
                                                       services[index]['point4'],
-                                                      style:
-                                                          AppTextStyle.serviceSubTitleTextStyle(
-                                                            color: Colors.black,
-                                                          ),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily:
+                                                            GoogleFonts.manrope()
+                                                                .fontFamily,
+                                                        color: Colors.black,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
@@ -1538,14 +1469,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                       TextSpan(
                                         text: 'z',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 40,
+                                          fontSize: 35,
                                           color: Color(0xffFE6225),
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Astral',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 40,
+                                          fontSize: 30,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1564,13 +1495,18 @@ class _MobileScreenState extends State<MobileScreen> {
                                 ? SizedBox()
                                 : Image.asset('assets/png/zastral.png'),
                             (title == 'About Us')
-                                ? SizedBox(height: 100)
+                                ? SizedBox(height: 80)
                                 : SizedBox(height: 50),
                             (title == 'About Us')
-                                ? Image.asset(
-                                  'assets/png/vision-mission.png',
-                                  // height: 800,
-                                  fit: BoxFit.contain,
+                                ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0,
+                                  ),
+                                  child: Image.asset(
+                                    'assets/png/vision-mission.png',
+                                    // height: 800,
+                                    fit: BoxFit.contain,
+                                  ),
                                 )
                                 : SizedBox(),
 
@@ -1599,7 +1535,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'We ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1607,7 +1543,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Build ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1615,7 +1551,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'With ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1623,7 +1559,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Care',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1637,7 +1573,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'We ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1645,7 +1581,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Scale ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1653,7 +1589,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'With ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1661,7 +1597,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Clarity',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 33,
+                                                      fontSize: 25,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1673,10 +1609,10 @@ class _MobileScreenState extends State<MobileScreen> {
                                           'Partnering with enterprises worldwide to drive transformation, foster innovation, and help them scale and thrive through Agentic AI, cloud, and modern engineering.',
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 14,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w400,
                                           ),
-                                          textAlign: TextAlign.center,
+                                          textAlign: TextAlign.start,
                                         ),
                                         SizedBox(height: 30),
                                         AutoSizeText(
@@ -1693,7 +1629,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                 )
                                 : SizedBox(),
                             (title == 'Home' || title == 'About Us')
-                                ? SizedBox(height: 100)
+                                ? SizedBox(height: 50)
                                 : SizedBox(),
 
                             (title == 'Home' || title == 'Our Products')
@@ -1703,14 +1639,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                       TextSpan(
                                         text: 'z',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 40,
+                                          fontSize: 30,
                                           color: Color(0xffFE6225),
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Astral Products',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 40,
+                                          fontSize: 30,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1718,7 +1654,9 @@ class _MobileScreenState extends State<MobileScreen> {
                                   ),
                                 )
                                 : SizedBox(),
-                            title == 'Home' ? SizedBox(height: 50) : SizedBox(),
+                            (title == 'Home' || title == 'Our Products')
+                                ? SizedBox(height: 60)
+                                : SizedBox(),
 
                             (title == 'About Us' ||
                                     title == 'Services' ||
@@ -1799,7 +1737,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   height: 60,
                                                   width: 60,
                                                   decoration: BoxDecoration(
-                                                    color: Color(0xffFE6225),
+                                                    color: Colors.white,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           100,
@@ -1823,21 +1761,30 @@ class _MobileScreenState extends State<MobileScreen> {
                                                                         1
                                                                 ? 'AI '
                                                                 : 'z',
-                                                        style:
-                                                            AppTextStyle.serviceTitleTextStyle(
-                                                              color: Color(
-                                                                0xffFE6225,
-                                                              ),
-                                                            ),
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontFamily:
+                                                              GoogleFonts.manrope()
+                                                                  .fontFamily,
+                                                          color: Color(
+                                                            0xffFE6225,
+                                                          ),
+                                                        ),
                                                       ),
                                                       TextSpan(
                                                         text:
                                                             product[index]['title'],
-                                                        style:
-                                                            AppTextStyle.serviceTitleTextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontFamily:
+                                                              GoogleFonts.manrope()
+                                                                  .fontFamily,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -1845,10 +1792,15 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 SizedBox(height: 16),
                                                 AutoSizeText(
                                                   product[index]['description'],
-                                                  style:
-                                                      AppTextStyle.serviceSubTitleTextStyle(
-                                                        color: Colors.black,
-                                                      ),
+                                                  textAlign: TextAlign.start,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontFamily:
+                                                        GoogleFonts.manrope()
+                                                            .fontFamily,
+                                                    color: Colors.black,
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -1877,7 +1829,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Join ',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 32,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -1885,7 +1837,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Our ',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 32,
                                                   color: AppTheme.buttonColor,
                                                 ),
                                           ),
@@ -1893,7 +1845,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Community',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 35,
+                                                  fontSize: 32,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -1908,8 +1860,9 @@ class _MobileScreenState extends State<MobileScreen> {
                                   ),
                                   child: AutoSizeText(
                                     'Be part of a unified space where people, projects, and operations thrive with AI-powered efficiency',
+
                                     style: AppTextStyle.communityTextTextStyle(
-                                      fontSize: 16,
+                                      fontSize: 12,
                                       color: Colors.black,
                                     ),
                                     textAlign: TextAlign.center,
@@ -1960,7 +1913,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                       children: [
                                         Image.asset(
                                           'assets/png/zetstron-logo.png',
-                                          height: 50,
+                                          height: 30,
                                         ),
                                         SizedBox(height: 40),
                                         AutoSizeText.rich(
@@ -1970,7 +1923,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'With ',
                                                 style:
                                                     AppTextStyle.communityTextStyle(
-                                                      fontSize: 22,
+                                                      fontSize: 17,
                                                       color: Colors.white,
                                                     ),
                                               ),
@@ -1978,7 +1931,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Zetstron',
                                                 style:
                                                     AppTextStyle.communityTextStyle(
-                                                      fontSize: 22,
+                                                      fontSize: 17,
                                                       color:
                                                           AppTheme.buttonColor,
                                                     ),
@@ -1988,14 +1941,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     ', you’re not just\na client — you’re a partner',
                                                 style:
                                                     AppTextStyle.communityTextStyle(
-                                                      fontSize: 22,
+                                                      fontSize: 17,
                                                       color: Colors.white,
                                                     ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: 60),
+                                        SizedBox(height: 50),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -2013,7 +1966,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                               'E-101 Palm Riviera, Tmvm Main Road, SIPCOT Industrial Area, Thirumudivakkam, Chennai -600044, Tamil Nadu',
                                               style:
                                                   AppTextStyle.containerTextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 12,
                                                     color: Color(0xff8A8889),
                                                   ),
                                             ),
@@ -2036,7 +1989,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   'Mob No:',
                                                   style:
                                                       AppTextStyle.containerTextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 12,
                                                         color: Colors.white,
                                                       ),
                                                 ),
@@ -2044,30 +1997,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   ' +91 9894815480',
                                                   style:
                                                       AppTextStyle.containerTextStyle(
-                                                        fontSize: 14,
-                                                        color: Color(
-                                                          0xff8A8889,
-                                                        ),
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 5),
-                                            Row(
-                                              children: [
-                                                AutoSizeText(
-                                                  'Landline No:',
-                                                  style:
-                                                      AppTextStyle.containerTextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.white,
-                                                      ),
-                                                ),
-                                                AutoSizeText(
-                                                  ' +91 9894815480',
-                                                  style:
-                                                      AppTextStyle.containerTextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 12,
                                                         color: Color(
                                                           0xff8A8889,
                                                         ),
@@ -2083,7 +2013,7 @@ class _MobileScreenState extends State<MobileScreen> {
 
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 40.0,
+                                      horizontal: 20.0,
                                     ),
                                     child: Divider(
                                       color: Color(0xff221C1A),
@@ -2098,7 +2028,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                           SizedBox(height: 20),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 40.0,
+                                              horizontal: 20.0,
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
@@ -2111,7 +2041,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     fontFamily:
                                                         GoogleFonts.manrope()
                                                             .fontFamily,
-                                                    fontSize: 10,
+                                                    fontSize: 8,
                                                     fontWeight: FontWeight.w500,
                                                     color: Color(0xffABABAB),
                                                   ),
@@ -2123,7 +2053,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     fontFamily:
                                                         GoogleFonts.manrope()
                                                             .fontFamily,
-                                                    fontSize: 10,
+                                                    fontSize: 8,
                                                     fontWeight: FontWeight.w500,
                                                     color: Color(0xffABABAB),
                                                   ),
@@ -2180,12 +2110,12 @@ class _MobileScreenState extends State<MobileScreen> {
       maxLines: maxLines,
       style: TextStyle(
         fontFamily: GoogleFonts.manrope().fontFamily,
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: FontWeight.w600,
       ),
       decoration: InputDecoration(
         prefixIcon:
-            imagePath != ''
+            (imagePath != '' || imagePath!.isNotEmpty)
                 ? SizedBox(
                   height: 20,
                   width: 20,
@@ -2197,17 +2127,22 @@ class _MobileScreenState extends State<MobileScreen> {
                     ),
                   ),
                 )
-                : SizedBox(),
+                : null,
         hintText: hintText,
         hintStyle: TextStyle(
           fontFamily: GoogleFonts.manrope().fontFamily,
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Color(0xffC6C6C6)),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
+        ),
+
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Color(0xff4184E1)),
@@ -2257,7 +2192,7 @@ class _MobileScreenState extends State<MobileScreen> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Image.asset('assets/png/$mediaName.png', height: 60),
+      child: Image.asset('assets/png/$mediaName.png', height: 40),
     );
   }
 
