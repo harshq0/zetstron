@@ -177,6 +177,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
         return Form(
           key: _formKey,
           child: Dialog(
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(26),
             ),
@@ -865,7 +866,7 @@ Email  : $email
                                                     ),
                                                   ],
                                                 ),
-
+                                                Spacer(),
                                                 Image.asset(
                                                   'assets/png/team.png',
                                                   height: 350,
@@ -2672,6 +2673,12 @@ Email  : $email
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
+        ),
+        errorStyle: TextStyle(
+          color: const Color.fromARGB(255, 237, 37, 23),
+          fontFamily: GoogleFonts.manrope().fontFamily,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

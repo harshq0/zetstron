@@ -2210,6 +2210,12 @@ Email  : $email
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
         ),
+        errorStyle: TextStyle(
+          color: const Color.fromARGB(255, 237, 37, 23),
+          fontFamily: GoogleFonts.manrope().fontFamily,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
