@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zetstron/themes/app_text_style.dart';
 import 'package:zetstron/themes/app_theme.dart';
@@ -179,22 +177,26 @@ class _DesktopScreenState extends State<DesktopScreen> {
         return Form(
           key: _formKey,
           child: Dialog(
-            child: Container(
-              width: fullWidth / 3,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(26),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(26),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: fullWidth / 3,
+                maxHeight:
+                    MediaQuery.of(context).size.height * 0.9, // ⬅️ limit height
               ),
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // shrink to fit
                   children: [
                     RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: "Let's",
+                            text: "Let's ",
                             style: TextStyle(
                               fontFamily: GoogleFonts.manrope().fontFamily,
                               fontSize: 32,
@@ -216,7 +218,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Full Name',
+                      "Full Name",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -225,19 +227,19 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
+                      keyboardType: TextInputType.name,
                       hintText: 'Enter Your Name',
                       imagePath: 'assets/png/user.png',
                       controller: nameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your name'
+                                  : null,
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Contact Number',
+                      "Contact Number",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -246,19 +248,19 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
+                      keyboardType: TextInputType.number,
                       hintText: 'Enter Contact Number',
                       imagePath: 'assets/png/call.png',
                       controller: numberController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your contact number';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your contact number'
+                                  : null,
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Email Id',
+                      "Email Id",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -267,23 +269,22 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
+                      keyboardType: TextInputType.emailAddress,
                       hintText: 'Enter Email ID',
                       imagePath: 'assets/png/mail.png',
                       controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
                           return 'Please enter your email';
-                        } else if (!RegExp(
-                          r'^[^@]+@[^@]+\.[^@]+',
-                        ).hasMatch(value)) {
-                          return 'Please enter a valid email address';
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                          return 'Enter a valid email';
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Description',
+                      "Description",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -293,47 +294,45 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     SizedBox(height: 5),
                     contactField(
                       maxLines: 3,
-                      hintText: 'Enter your descrtiption',
+                      hintText: 'Enter your message',
                       imagePath: '',
                       controller: descriptionController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your message'
+                                  : null,
                     ),
                     SizedBox(height: 30),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          if (_formKey.currentState!.validate()) {
-                            openGmailWeb(
-                              toEmail: 'vijayganesh1704@gmail.com',
-                              body: descriptionController.text,
-                              subject: bodyController.text,
-                            );
-                            Navigator.pop(context);
-                          }
-                        });
+                        if (_formKey.currentState!.validate()) {
+                          openGmailWeb(
+                            toEmail: 'vijayganesh1704@gmail.com',
+                            description: descriptionController.text,
+
+                            name: nameController.text,
+                            number: numberController.text,
+                            email: emailController.text,
+                          );
+                          Navigator.pop(context);
+                        }
                       },
                       child: Container(
-                        width: fullWidth,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: Color(0xffFE6225),
                           borderRadius: BorderRadius.circular(9),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          child: Center(
-                            child: AutoSizeText(
-                              "Let's Talk",
-                              style: TextStyle(
-                                fontFamily: GoogleFonts.manrope().fontFamily,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: Center(
+                          child: AutoSizeText(
+                            "Let's Talk",
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.manrope().fontFamily,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -351,20 +350,39 @@ class _DesktopScreenState extends State<DesktopScreen> {
 
   Future<void> openGmailWeb({
     required String toEmail,
-    required String subject,
-    required String body,
+    required String description,
+    required String name,
+    required String number,
+    required String email, // sender email
   }) async {
+    // Build body with extra details
+    final String fullBody = """
+Hi Team,
+
+$description
+
+----------------
+Sender Details:
+Name   : $name
+Number : $number
+Email  : $email
+""";
+
     final Uri gmailUrl = Uri.parse(
       'https://mail.google.com/mail/?view=cm&fs=1'
       '&to=$toEmail'
-      '&su=${Uri.encodeComponent(subject)}'
-      '&body=${Uri.encodeComponent(body)}',
+      '&body=${Uri.encodeComponent(fullBody)}',
     );
 
     if (await canLaunchUrl(gmailUrl)) {
       await launchUrl(gmailUrl, mode: LaunchMode.externalApplication);
+      emailController.clear();
+      nameController.clear();
+      numberController.clear();
+      descriptionController.clear();
+      bodyController.clear();
     } else {
-      throw 'Could not open Gmail';
+      throw '❌ Could not open Gmail';
     }
   }
 
@@ -453,185 +471,175 @@ class _DesktopScreenState extends State<DesktopScreen> {
                     key: globalKey,
                     children: [
                       Stack(
+                        alignment:
+                            Alignment.center, // centers children by default
                         children: [
-                          Center(
-                            child: Image.asset(
-                              'assets/png/z-logo.png',
-                              height: title == 'Home' ? 350 : 220,
-                            ),
+                          // Background image
+                          Image.asset(
+                            'assets/png/z-logo.png',
+                            height: title == 'Home' ? 470 : 370,
                           ),
-                          Positioned(
-                            left:
-                                (title == 'Our Products' || title == 'Services')
-                                    ? fullWidth * 0.33
-                                    : (title == 'About Us' ||
-                                        title == 'Contact Us')
-                                    ? fullWidth * 0.39
-                                    : fullWidth * 0.28,
-                            top:
-                                (title == 'Our Products' || title == 'Services')
-                                    ? 45
-                                    : fullHeight * 0.1,
-                            child:
-                                title == 'Our Products'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Our ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
 
-                                                  color: Colors.black,
-                                                ),
+                          // Overlay text in center
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40.0,
+                            ), // optional spacing
+                            child: Column(
+                              mainAxisSize:
+                                  MainAxisSize
+                                      .min, // keeps it compact, not full height
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                if (title == 'Our Products')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Our ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
                                           ),
-                                          TextSpan(
-                                            text: 'Products',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Products ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Color(0xffFE6225),
                                           ),
-                                          TextSpan(
-                                            text:
-                                                'to Power\nYour Digital Journey.',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'to Power\nYour Digital Journey.',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
                                           ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'Services'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Our ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Services',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                'to Power\nYour Digital Journey.',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'Contact Us'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Contact',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Zetstron',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'About Us'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'About',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Zetstron',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: '        Accelerating ',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Digital\nTransformation ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                'with AI, Cloud\n       & Product Innovation',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
+                                  )
+                                else if (title == 'Services')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Our ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Services ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'to Power\nYour Digital Journey.',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else if (title == 'Contact Us')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Contact ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Zetstron',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else if (title == 'About Us')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'About ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Zetstron',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Accelerating ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Digital\nTransformation ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'with AI, Cloud\n& Product Innovation',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 70,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -645,6 +653,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                             : 'We, Zetstron, a lean and agile technology partner powered by our\nAI-driven platform. By combining lean operations with intelligent\nautomation, we position our clients ahead of the competition —\nenabling them to scale with confidence and clarity.',
                         textAlign: TextAlign.center,
                         style: AppTextStyle.contentTextStyle(
+                          fontSize: 18,
                           color: Color(0xff3A3A3A),
                         ),
                       ),
@@ -789,6 +798,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
                           ? SizedBox()
                           : SizedBox(height: 80),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           (title == 'About Us' ||
                                   title == 'Our Products' ||
@@ -800,19 +811,21 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                   horizontal: 80.0,
                                 ),
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
+                                      spacing: 20,
                                       children: [
-                                        Flexible(
+                                        Expanded(
                                           flex: 2,
                                           child: CustomContainer(
                                             // height: 370,
-                                            padding: EdgeInsets.only(
-                                              top: 10,
-                                              // left: 30,
-                                              // right: 30,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 24,
+                                              horizontal: 40,
                                             ),
                                             gradient: LinearGradient(
                                               begin: Alignment.centerLeft,
@@ -825,7 +838,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Column(
                                                   crossAxisAlignment:
@@ -852,6 +865,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                   ],
                                                 ),
+
                                                 Image.asset(
                                                   'assets/png/team.png',
                                                   height: 350,
@@ -860,17 +874,19 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                             ),
                                           ),
                                         ),
-                                        Flexible(
+                                        Expanded(
                                           flex: 1,
                                           child: CustomContainer(
-                                            padding: EdgeInsets.only(
-                                              top: 10,
-                                              bottom: 10,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 24,
+                                              horizontal: 40,
                                             ),
                                             color: Color(0xffF0F0F0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Image.asset(
                                                   'assets/png/price.png',
@@ -878,36 +894,27 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                   fit: BoxFit.contain,
                                                 ),
                                                 SizedBox(height: 15),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 30.0,
-                                                      ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      AutoSizeText(
-                                                        'Fixed-Price Project',
-                                                        style:
-                                                            AppTextStyle.containerTextStyle(
-                                                              fontSize: 25,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      AutoSizeText(
-                                                        'Get results quickly with a short, fixed-\nprice project covering key features,\nmigrations, or proof-of-concepts.',
-                                                        style:
-                                                            AppTextStyle.container1TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    AutoSizeText(
+                                                      'Fixed-Price Project',
+                                                      style:
+                                                          AppTextStyle.containerTextStyle(
+                                                            fontSize: 25,
+                                                            color: Colors.black,
+                                                          ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    AutoSizeText(
+                                                      'Get results quickly with a short, fixed-\nprice project covering key features,\nmigrations, or proof-of-concepts.',
+                                                      style:
+                                                          AppTextStyle.container1TextStyle(
+                                                            color: Colors.black,
+                                                          ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -919,55 +926,61 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
+                                      spacing: 20,
                                       children: [
-                                        Flexible(
+                                        Expanded(
                                           flex: 1,
                                           child: CustomContainer(
-                                            // height: 370,
-                                            padding: EdgeInsets.only(
-                                              top: 15,
-                                              left: 30,
-                                              right: 30,
-                                              bottom: 15,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 24,
+                                              horizontal: 40,
                                             ),
                                             color: Color(0xffF0F0F0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Image.asset(
                                                   'assets/png/time.png',
-                                                  height: 200,
+                                                  height: 255,
                                                 ),
-                                                SizedBox(height: 15),
-                                                AutoSizeText(
-                                                  'Managed Delivery',
-                                                  style:
-                                                      AppTextStyle.containerTextStyle(
-                                                        fontSize: 25,
-                                                        color: Colors.black,
-                                                      ),
-                                                ),
-                                                SizedBox(height: 10),
-                                                AutoSizeText(
-                                                  'Guaranteed outcomes with SLAs,\nproactive monitoring, and 24/7 support.',
-                                                  style:
-                                                      AppTextStyle.container1TextStyle(
-                                                        color: Colors.black,
-                                                      ),
+                                                // SizedBox(height: 20),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    AutoSizeText(
+                                                      'Managed Delivery',
+                                                      style:
+                                                          AppTextStyle.containerTextStyle(
+                                                            fontSize: 25,
+                                                            color: Colors.black,
+                                                          ),
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    AutoSizeText(
+                                                      'Guaranteed outcomes with SLAs,\nproactive monitoring, and 24/7 support.',
+                                                      style:
+                                                          AppTextStyle.container1TextStyle(
+                                                            color: Colors.black,
+                                                          ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
                                           ),
                                         ),
-                                        Flexible(
+
+                                        Expanded(
                                           flex: 2,
                                           child: CustomContainer(
                                             // height: 370,
-                                            padding: EdgeInsets.only(
-                                              // top: 10,
-                                              // left: 30,
-                                              // right: 30,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 24,
+                                              horizontal: 40,
                                             ),
                                             gradient: LinearGradient(
                                               begin: Alignment.centerLeft,
@@ -980,7 +993,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                             ),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Column(
                                                   crossAxisAlignment:
@@ -1007,6 +1020,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                   ],
                                                 ),
+                                                Spacer(),
                                                 Image.asset(
                                                   'assets/png/laptop.png',
                                                   height: 350,
@@ -1054,6 +1068,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(60.0),
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
@@ -1067,10 +1083,11 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                 text: TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: 'Ready',
+                                                      text: 'Ready ',
                                                       style:
                                                           AppTextStyle.communityTextStyle(
-                                                            fontSize: 50,
+                                                            letterSpacing: -2,
+                                                            fontSize: 65,
                                                             color: Color(
                                                               0xffFE6225,
                                                             ),
@@ -1078,10 +1095,11 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                     TextSpan(
                                                       text:
-                                                          'to\nstart your journey\nwith us?',
+                                                          'to\nstart your\njourney\nwith us?',
                                                       style:
                                                           AppTextStyle.communityTextStyle(
-                                                            fontSize: 50,
+                                                            letterSpacing: -2,
+                                                            fontSize: 65,
                                                             color: Colors.black,
                                                           ),
                                                     ),
@@ -1102,7 +1120,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                 'E-101 Palm Riviera, Tmvm Main Road,\nSIPCOT Industrial Area, Thirumudivakkam,\nChennai -600044, Tamil Nadu',
                                                 style:
                                                     AppTextStyle.contactDetailsTextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 14,
                                                       color: Color(0xff323131),
                                                     ),
                                               ),
@@ -1123,7 +1141,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                       text: 'Mob No :',
                                                       style:
                                                           AppTextStyle.contactDetailsTextStyle(
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             color: Color(
                                                               0xff646464,
                                                             ),
@@ -1133,7 +1151,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                       text: '+91 9894815480',
                                                       style:
                                                           AppTextStyle.contactDetailsTextStyle(
-                                                            fontSize: 16,
+                                                            fontSize: 14,
                                                             color: Color(
                                                               0xff323131,
                                                             ),
@@ -1175,6 +1193,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                     SizedBox(height: 5),
                                                     contactField(
+                                                      keyboardType:
+                                                          TextInputType.name,
                                                       hintText:
                                                           'Enter Full Name',
                                                       imagePath:
@@ -1204,6 +1224,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                     SizedBox(height: 5),
                                                     contactField(
+                                                      keyboardType:
+                                                          TextInputType.number,
                                                       hintText:
                                                           'Enter Contact Number',
                                                       imagePath:
@@ -1232,6 +1254,9 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                     SizedBox(height: 5),
                                                     contactField(
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .emailAddress,
                                                       hintText:
                                                           'Enter Email ID',
                                                       imagePath:
@@ -1264,16 +1289,18 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     ),
                                                     SizedBox(height: 5),
                                                     contactField(
+                                                      keyboardType:
+                                                          TextInputType.text,
                                                       maxLines: 5,
                                                       hintText:
-                                                          'Enter your descrtiption',
+                                                          'Enter your message',
                                                       imagePath: '',
                                                       controller:
                                                           descriptionController,
                                                       validator: (value) {
                                                         if (value == null ||
                                                             value.isEmpty) {
-                                                          return 'Please enter some text';
+                                                          return 'Please enter your message';
                                                         }
                                                         return null;
                                                       },
@@ -1286,17 +1313,20 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                               .currentState!
                                                               .validate()) {
                                                             openGmailWeb(
+                                                              email:
+                                                                  emailController
+                                                                      .text,
+                                                              name:
+                                                                  nameController
+                                                                      .text,
+                                                              number:
+                                                                  numberController
+                                                                      .text,
                                                               toEmail:
                                                                   'vijayganesh1704@gmail.com',
-                                                              body:
+                                                              description:
                                                                   descriptionController
                                                                       .text,
-                                                              subject:
-                                                                  bodyController
-                                                                      .text,
-                                                            );
-                                                            Navigator.pop(
-                                                              context,
                                                             );
                                                           }
                                                         });
@@ -1411,7 +1441,8 @@ class _DesktopScreenState extends State<DesktopScreen> {
                               ),
                           (title == 'About Us')
                               ? SizedBox()
-                              : SizedBox(height: 100),
+                              : SizedBox(height: 40),
+
                           (title == 'About Us' ||
                                   title == 'Our Products' ||
                                   title == 'Contact Us')
@@ -1663,10 +1694,16 @@ class _DesktopScreenState extends State<DesktopScreen> {
                               ? SizedBox(height: 150)
                               : SizedBox(height: 50),
                           (title == 'About Us')
-                              ? Image.asset(
-                                'assets/png/vision-mission.png',
-                                // height: 800,
-                                fit: BoxFit.contain,
+                              ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: Image.asset(
+                                  'assets/png/vision-mission.png',
+                                  height: 900,
+                                  width: fullWidth,
+                                  // fit: BoxFit.contain,
+                                ),
                               )
                               : SizedBox(),
 
@@ -1677,113 +1714,143 @@ class _DesktopScreenState extends State<DesktopScreen> {
                               ? Container(
                                 width: fullWidth,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffF0F0F0),
+                                  color: Color(0xffFAF2EF),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 80.0,
-                                    horizontal: 140,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'We ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Build ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'With ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Care',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 80.0,
+                                        horizontal: 140,
                                       ),
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'We ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Colors.black,
-                                                  ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'We ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -1,
+                                                        height: 0,
+                                                        fontSize: 55,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Build ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -1,
+                                                        height: 0,
+                                                        fontSize: 55,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'With ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -1,
+                                                        height: 0,
+                                                        fontSize: 55,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Care',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -1,
+                                                        height: 0,
+                                                        fontSize: 55,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: 'Scale ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Color(0xffFE6225),
-                                                  ),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'We ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        fontSize: 55,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Scale ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        fontSize: 55,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'With ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        fontSize: 55,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Clarity',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        fontSize: 55,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: 'With ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Colors.black,
-                                                  ),
+                                          ),
+                                          SizedBox(height: 24),
+                                          AutoSizeText(
+                                            'Partnering with enterprises worldwide to drive transformation,\nfoster innovation, and help them scale and thrive through\nAgentic AI, cloud, and modern engineering.',
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  GoogleFonts.manrope()
+                                                      .fontFamily,
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                            TextSpan(
-                                              text: 'Clarity',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 55,
-                                                    color: Color(0xffFE6225),
-                                                  ),
+                                          ),
+                                          SizedBox(height: 50),
+                                          AutoSizeText(
+                                            '- Vijay Ganesh CEO',
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  GoogleFonts.manrope()
+                                                      .fontFamily,
+                                              color: Color(0xffFE6225),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 24),
-                                      AutoSizeText(
-                                        'Partnering with enterprises worldwide to drive transformation,\nfoster innovation, and help them scale and thrive through\nAgentic AI, cloud, and modern engineering.',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      SizedBox(height: 50),
-                                      AutoSizeText(
-                                        '- Vijay Ganesh CEO',
-                                        style: TextStyle(
-                                          color: Color(0xffFE6225),
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Image.asset(
+                                      'assets/png/vision-icon.png',
+                                      height: 450,
+                                    ),
+                                  ],
                                 ),
                               )
                               : SizedBox(),
@@ -1970,7 +2037,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: 'Join',
+                                              text: 'Join ',
                                               style:
                                                   AppTextStyle.communityTextStyle(
                                                     fontSize: 70,
@@ -1978,7 +2045,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                   ),
                                             ),
                                             TextSpan(
-                                              text: 'Our',
+                                              text: 'Our ',
                                               style:
                                                   AppTextStyle.communityTextStyle(
                                                     fontSize: 70,
@@ -2086,10 +2153,14 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                       ),
                                       SizedBox(height: 60),
                                       Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Expanded(
                                                 flex: 1,
@@ -2139,20 +2210,27 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                           ),
 
                                           Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Expanded(
                                                 flex: 1,
-                                                child: AutoSizeText(
-                                                  'E-101 Palm Riviera, Tmvm Main Road,\nSIPCOT Industrial Area, Thirumudivakkam,\nChennai -600044, Tamil Nadu',
-                                                  style:
-                                                      AppTextStyle.containerTextStyle(
-                                                        fontSize: 16,
-                                                        color: Color(
-                                                          0xff8A8889,
-                                                        ),
-                                                      ),
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(height: 12),
+                                                    AutoSizeText(
+                                                      'E-101 Palm Riviera, Tmvm Main Road,\nSIPCOT Industrial Area, Thirumudivakkam,\nChennai -600044, Tamil Nadu',
+                                                      style:
+                                                          AppTextStyle.containerTextStyle(
+                                                            fontSize: 16,
+                                                            color: Color(
+                                                              0xff8A8889,
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                               Expanded(
@@ -2162,9 +2240,10 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                       CrossAxisAlignment.start,
 
                                                   children: [
-                                                    SizedBox(height: 20),
+                                                    SizedBox(height: 12),
                                                     menu(
                                                       text: 'Home',
+                                                      selectedText: title,
                                                       onTap: () {
                                                         setState(() {
                                                           scrollToSection(
@@ -2177,6 +2256,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     SizedBox(height: 7),
                                                     menu(
                                                       text: 'About Us',
+                                                      selectedText: title,
                                                       onTap: () {
                                                         setState(() {
                                                           scrollToSection(
@@ -2189,6 +2269,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     SizedBox(height: 7),
                                                     menu(
                                                       text: 'Our Products',
+                                                      selectedText: title,
                                                       onTap: () {
                                                         setState(() {
                                                           scrollToSection(
@@ -2202,6 +2283,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     SizedBox(height: 7),
                                                     menu(
                                                       text: 'Services',
+                                                      selectedText: title,
                                                       onTap: () {
                                                         setState(() {
                                                           scrollToSection(
@@ -2214,6 +2296,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                     SizedBox(height: 7),
                                                     menu(
                                                       text: 'Contact Us',
+                                                      selectedText: title,
                                                       onTap: () {
                                                         setState(() {
                                                           scrollToSection(
@@ -2233,7 +2316,7 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                       CrossAxisAlignment.start,
 
                                                   children: [
-                                                    SizedBox(height: 20),
+                                                    SizedBox(height: 12),
                                                     menu(
                                                       text: 'Instagram',
                                                       onTap: () {},
@@ -2266,39 +2349,20 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                                 child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
                                                   children: [
+                                                    SizedBox(height: 12),
                                                     Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
                                                         AutoSizeText(
-                                                          'Mob No:',
-                                                          style:
-                                                              AppTextStyle.containerTextStyle(
-                                                                fontSize: 16,
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                              ),
-                                                        ),
-                                                        AutoSizeText(
-                                                          ' +91 9894815480',
-                                                          style:
-                                                              AppTextStyle.containerTextStyle(
-                                                                fontSize: 16,
-                                                                color: Color(
-                                                                  0xff8A8889,
-                                                                ),
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Row(
-                                                      children: [
-                                                        AutoSizeText(
-                                                          'Landline No:',
+                                                          'Mob No :',
                                                           style:
                                                               AppTextStyle.containerTextStyle(
                                                                 fontSize: 16,
@@ -2399,6 +2463,12 @@ class _DesktopScreenState extends State<DesktopScreen> {
                                           ),
                                           child: Image.asset(
                                             'assets/png/Zetstron.png',
+                                            color: const Color.fromARGB(
+                                              179,
+                                              255,
+                                              255,
+                                              255,
+                                            ),
                                           ),
                                         ),
                                         // SvgPicture.asset(
@@ -2562,11 +2632,13 @@ class _DesktopScreenState extends State<DesktopScreen> {
     required TextEditingController controller,
     String? Function(String?)? validator,
     int? maxLines = 1,
+    TextInputType? keyboardType,
   }) {
     return TextFormField(
       validator: validator,
       controller: controller,
       maxLines: maxLines,
+      keyboardType: keyboardType,
       style: TextStyle(
         fontFamily: GoogleFonts.manrope().fontFamily,
         fontSize: 15,
@@ -2597,6 +2669,10 @@ class _DesktopScreenState extends State<DesktopScreen> {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
         ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Color(0xffC6C6C6)),
@@ -2609,14 +2685,18 @@ class _DesktopScreenState extends State<DesktopScreen> {
     );
   }
 
-  Widget menu({required String text, required void Function()? onTap}) {
+  Widget menu({
+    required String text,
+    required void Function()? onTap,
+    String? selectedText,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: AutoSizeText(
         text,
         style: AppTextStyle.containerTextStyle(
           fontSize: 16,
-          color: Color(0xff8A8889),
+          color: text == selectedText ? Color(0xffFE6225) : Color(0xff8A8889),
         ),
       ),
     );

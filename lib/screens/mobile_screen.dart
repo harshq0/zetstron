@@ -174,20 +174,39 @@ class _MobileScreenState extends State<MobileScreen> {
 
   Future<void> openGmailWeb({
     required String toEmail,
-    required String subject,
-    required String body,
+    required String description,
+    required String name,
+    required String number,
+    required String email, // sender email
   }) async {
+    // Build body with extra details
+    final String fullBody = """
+Hi Team,
+
+$description
+
+---
+Sender Details:
+Name   : $name
+Number : $number
+Email  : $email
+""";
+
     final Uri gmailUrl = Uri.parse(
       'https://mail.google.com/mail/?view=cm&fs=1'
       '&to=$toEmail'
-      '&su=${Uri.encodeComponent(subject)}'
-      '&body=${Uri.encodeComponent(body)}',
+      '&body=${Uri.encodeComponent(fullBody)}',
     );
 
     if (await canLaunchUrl(gmailUrl)) {
       await launchUrl(gmailUrl, mode: LaunchMode.externalApplication);
+      emailController.clear();
+      nameController.clear();
+      numberController.clear();
+      descriptionController.clear();
+      bodyController.clear();
     } else {
-      throw 'Could not open Gmail';
+      throw '❌ Could not open Gmail';
     }
   }
 
@@ -367,178 +386,185 @@ class _MobileScreenState extends State<MobileScreen> {
                       key: globalKey,
                       children: [
                         Stack(
+                          alignment:
+                              Alignment.center, // centers children by default
                           children: [
-                            Center(
-                              child: Image.asset(
-                                'assets/png/z-logo.png',
-                                height: title == 'Home' ? 200 : 220,
-                              ),
-                            ),
-                            Positioned(
-                              left:
-                                  (title == 'Our Products' ||
-                                          title == 'Services')
-                                      ? fullWidth * 0.10
-                                      : (title == 'About Us' ||
-                                          title == 'Contact Us')
-                                      ? fullWidth * 0.10
-                                      : fullWidth / 30,
-                              top:
-                                  title == 'Contact Us'
-                                      ? fullHeight / 9
-                                      : title == 'About Us'
-                                      ? fullHeight / 9
-                                      : (title == 'Our Products' ||
-                                          title == 'Services')
-                                      ? fullHeight / 10
-                                      : fullHeight / 20,
-                              child:
-                                  title == 'Our Products'
-                                      ? AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Our ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Products',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  'to Power\nYour Digital Journey.',
+                            // Background image
+                            Image.asset('assets/png/z-logo.png', height: 250),
 
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : title == 'Services'
-                                      ? AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Our ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Services',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  'to Power\nYour Digital Journey.',
-
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 30,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : title == 'Contact Us'
-                                      ? AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Contact',
-
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Zetstron',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : title == 'About Us'
-                                      ? AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'About',
-
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 45,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Zetstron',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 45,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : AutoSizeText.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: '        Accelerating ',
-
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 24,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Business\nTransformation ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 24,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text:
-                                                  'with AI, Cloud\n       & Product Innovation',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 24,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
+                            // Overlay text in center
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40.0,
+                              ), // optional spacing
+                              child: Column(
+                                mainAxisSize:
+                                    MainAxisSize
+                                        .min, // keeps it compact, not full height
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  if (title == 'Our Products')
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Our ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Products ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Color(0xffFE6225),
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'to Power\nYour Digital Journey.',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                        ],
                                       ),
+                                    )
+                                  else if (title == 'Services')
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Our ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Services ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Color(0xffFE6225),
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'to Power\nYour Digital Journey.',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else if (title == 'Contact Us')
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Contact ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Zetstron',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Color(0xffFE6225),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else if (title == 'About Us')
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'About ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Zetstron',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 34,
+                                                  color: Color(0xffFE6225),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Accelerating ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 28,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Digital\nTransformation ',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 28,
+                                                  color: Color(0xffFE6225),
+                                                ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'with AI, Cloud\n& Product Innovation',
+                                            style:
+                                                AppTextStyle.headingTextStyle(
+                                                  letterSpacing: -2,
+                                                  fontSize: 28,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -557,6 +583,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                 : 'We, Zetstron, a lean and agile technology partner powered by our AI-driven platform. By combining lean operations with intelligent automation, we position our clients ahead of the competition — enabling them to scale with confidence and clarity.',
                             textAlign: TextAlign.center,
                             style: AppTextStyle.contentTextStyle(
+                              fontSize: 14,
                               color: Color(0xff3A3A3A),
                             ),
                           ),
@@ -683,14 +710,16 @@ class _MobileScreenState extends State<MobileScreen> {
                                     text: '        ZETSTRON\n',
 
                                     style: AppTextStyle.headingTextStyle(
-                                      fontSize: 30,
+                                      letterSpacing: -1,
+                                      fontSize: 36,
                                       color: Color(0xffFE6225),
                                     ),
                                   ),
                                   TextSpan(
-                                    text: 'Engagement models ',
+                                    text: 'Engagement Models ',
                                     style: AppTextStyle.headingTextStyle(
-                                      fontSize: 30,
+                                      letterSpacing: -1,
+                                      fontSize: 36,
                                       color: Colors.black,
                                     ),
                                   ),
@@ -721,10 +750,10 @@ class _MobileScreenState extends State<MobileScreen> {
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 10,
-                                          left: 20,
-                                          right: 20,
-                                          bottom: 10,
+                                          top: 24,
+                                          left: 24,
+                                          right: 24,
+                                          bottom: 24,
                                         ),
                                         gradient: LinearGradient(
                                           begin: Alignment.centerLeft,
@@ -749,7 +778,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                               textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
-                                                    fontSize: 18,
+                                                    fontSize: 24,
                                                     color: Colors.white,
                                                   ),
                                             ),
@@ -769,20 +798,25 @@ class _MobileScreenState extends State<MobileScreen> {
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 10,
-                                          left: 10,
-                                          right: 10,
-                                          bottom: 10,
+                                          top: 24,
+                                          left: 24,
+                                          right: 24,
+                                          bottom: 24,
                                         ),
                                         color: Color(0xffF0F0F0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Image.asset(
-                                              'assets/png/price.png',
-                                              height: 200,
-                                              fit: BoxFit.cover,
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 20.0,
+                                              ),
+                                              child: Image.asset(
+                                                'assets/png/price.png',
+                                                height: 200,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                             SizedBox(height: 15),
                                             Padding(
@@ -799,7 +833,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     textAlign: TextAlign.center,
                                                     style:
                                                         AppTextStyle.containerTextStyle(
-                                                          fontSize: 18,
+                                                          fontSize: 24,
                                                           color: Colors.black,
                                                         ),
                                                   ),
@@ -822,19 +856,21 @@ class _MobileScreenState extends State<MobileScreen> {
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 10,
-                                          left: 10,
-                                          right: 10,
-                                          bottom: 10,
+                                          top: 24,
+                                          left: 24,
+                                          right: 24,
+                                          bottom: 24,
                                         ),
                                         color: Color(0xffF0F0F0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Image.asset(
-                                              'assets/png/time.png',
-                                              height: 200,
+                                            Center(
+                                              child: Image.asset(
+                                                'assets/png/time.png',
+                                                height: 200,
+                                              ),
                                             ),
                                             SizedBox(height: 15),
                                             AutoSizeText(
@@ -842,7 +878,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                               textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
-                                                    fontSize: 25,
+                                                    fontSize: 24,
                                                     color: Colors.black,
                                                   ),
                                             ),
@@ -862,10 +898,10 @@ class _MobileScreenState extends State<MobileScreen> {
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
-                                          top: 10,
-                                          left: 10,
-                                          right: 10,
-                                          bottom: 10,
+                                          top: 24,
+                                          left: 24,
+                                          right: 24,
+                                          bottom: 24,
                                         ),
                                         gradient: LinearGradient(
                                           begin: Alignment.centerLeft,
@@ -890,7 +926,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                               textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
-                                                    fontSize: 18,
+                                                    fontSize: 24,
                                                     color: Colors.white,
                                                   ),
                                             ),
@@ -946,10 +982,12 @@ class _MobileScreenState extends State<MobileScreen> {
                                             TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: 'Ready',
+                                                  text: 'Ready ',
                                                   style:
                                                       AppTextStyle.communityTextStyle(
-                                                        fontSize: 30,
+                                                        height: -1,
+                                                        letterSpacing: -1,
+                                                        fontSize: 45,
                                                         color: Color(
                                                           0xffFE6225,
                                                         ),
@@ -957,10 +995,12 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 ),
                                                 TextSpan(
                                                   text:
-                                                      'to\nstart your journey\nwith us?',
+                                                      'to start your journey with us?',
                                                   style:
                                                       AppTextStyle.communityTextStyle(
-                                                        fontSize: 30,
+                                                        height: -1,
+                                                        letterSpacing: -1,
+                                                        fontSize: 45,
                                                         color: Colors.black,
                                                       ),
                                                 ),
@@ -1038,6 +1078,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.name,
                                                 hintText: 'Enter Full Name',
                                                 imagePath:
                                                     'assets/png/user.png',
@@ -1063,6 +1105,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 hintText:
                                                     'Enter Contact Number',
                                                 imagePath:
@@ -1089,6 +1133,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.emailAddress,
                                                 hintText: 'Enter Email ID',
                                                 imagePath:
                                                     'assets/png/mail.png',
@@ -1119,15 +1165,14 @@ class _MobileScreenState extends State<MobileScreen> {
                                               SizedBox(height: 5),
                                               contactField(
                                                 maxLines: 5,
-                                                hintText:
-                                                    'Enter your descrtiption',
+                                                hintText: 'Enter your message',
                                                 imagePath: '',
                                                 controller:
                                                     descriptionController,
                                                 validator: (value) {
                                                   if (value == null ||
                                                       value.isEmpty) {
-                                                    return 'Please enter some text';
+                                                    return 'Please enter your message';
                                                   }
                                                   return null;
                                                 },
@@ -1139,15 +1184,20 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     if (_formKey.currentState!
                                                         .validate()) {
                                                       openGmailWeb(
+                                                        email:
+                                                            emailController
+                                                                .text,
+                                                        name:
+                                                            nameController.text,
+                                                        number:
+                                                            numberController
+                                                                .text,
                                                         toEmail:
                                                             'vijayganesh1704@gmail.com',
-                                                        body:
+                                                        description:
                                                             descriptionController
                                                                 .text,
-                                                        subject:
-                                                            bodyController.text,
                                                       );
-                                                      Navigator.pop(context);
                                                     }
                                                   });
                                                 },
@@ -1208,21 +1258,24 @@ class _MobileScreenState extends State<MobileScreen> {
                                         text: 'Our Services to Power\n',
 
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 28,
+                                          letterSpacing: -1,
+                                          fontSize: 32,
                                           color: Colors.black,
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Your ',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 28,
+                                          letterSpacing: -1,
+                                          fontSize: 32,
                                           color: Colors.black,
                                         ),
                                       ),
                                       TextSpan(
                                         text: 'Digital Journey.',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 28,
+                                          letterSpacing: -1,
+                                          fontSize: 32,
                                           color: Color(0xffFE6225),
                                         ),
                                       ),
@@ -1241,7 +1294,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                     horizontal: 20,
                                   ),
                                   child: SizedBox(
-                                    height: 4350,
+                                    height: 4400,
                                     child: GridView.builder(
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
@@ -1343,7 +1396,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 AutoSizeText(
                                                   services[index]['title'],
                                                   style: TextStyle(
-                                                    fontSize: 20,
+                                                    fontSize: 24,
                                                     fontWeight: FontWeight.w600,
                                                     fontFamily:
                                                         GoogleFonts.manrope()
@@ -1356,7 +1409,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   services[index]['description'],
                                                   textAlign: TextAlign.start,
                                                   style: TextStyle(
-                                                    fontSize: 14,
+                                                    fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                     fontFamily:
                                                         GoogleFonts.manrope()
@@ -1375,7 +1428,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     AutoSizeText(
                                                       services[index]['point1'],
                                                       style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontFamily:
@@ -1396,7 +1449,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     AutoSizeText(
                                                       services[index]['point2'],
                                                       style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontFamily:
@@ -1417,7 +1470,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     AutoSizeText(
                                                       services[index]['point3'],
                                                       style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontFamily:
@@ -1438,7 +1491,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                     AutoSizeText(
                                                       services[index]['point4'],
                                                       style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         fontFamily:
@@ -1476,7 +1529,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                       TextSpan(
                                         text: 'Astral',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 30,
+                                          letterSpacing: -1,
+                                          fontSize: 36,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1517,12 +1571,12 @@ class _MobileScreenState extends State<MobileScreen> {
                                 ? Container(
                                   width: fullWidth,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffF0F0F0),
+                                    color: Color(0xffFAF2EF),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 40.0,
-                                      horizontal: 20,
+                                      vertical: 20.0,
+                                      horizontal: 40,
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
@@ -1535,7 +1589,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'We ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1543,7 +1598,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Build ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1551,7 +1607,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'With ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1559,7 +1616,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Care',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1573,7 +1631,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'We ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1581,7 +1640,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Scale ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1589,7 +1649,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'With ',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Colors.black,
                                                     ),
                                               ),
@@ -1597,7 +1658,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                 text: 'Clarity',
                                                 style:
                                                     AppTextStyle.headingTextStyle(
-                                                      fontSize: 25,
+                                                      letterSpacing: -2,
+                                                      fontSize: 30,
                                                       color: Color(0xffFE6225),
                                                     ),
                                               ),
@@ -1608,9 +1670,12 @@ class _MobileScreenState extends State<MobileScreen> {
                                         AutoSizeText(
                                           'Partnering with enterprises worldwide to drive transformation, foster innovation, and help them scale and thrive through Agentic AI, cloud, and modern engineering.',
                                           style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.manrope()
+                                                    .fontFamily,
                                             color: Colors.black,
                                             fontSize: 12,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                           textAlign: TextAlign.start,
                                         ),
@@ -1618,9 +1683,12 @@ class _MobileScreenState extends State<MobileScreen> {
                                         AutoSizeText(
                                           '- Vijay Ganesh CEO',
                                           style: TextStyle(
+                                            fontFamily:
+                                                GoogleFonts.manrope()
+                                                    .fontFamily,
                                             color: Color(0xffFE6225),
                                             fontSize: 10,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                           ),
                                         ),
                                       ],
@@ -1646,7 +1714,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                       TextSpan(
                                         text: 'Astral Products',
                                         style: AppTextStyle.headingTextStyle(
-                                          fontSize: 30,
+                                          letterSpacing: -1,
+                                          fontSize: 36,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1667,13 +1736,13 @@ class _MobileScreenState extends State<MobileScreen> {
                                     horizontal: 20,
                                   ),
                                   child: SizedBox(
-                                    height: 2200,
+                                    height: 1900,
                                     child: GridView.builder(
                                       itemCount: product.length,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 1,
-                                            mainAxisExtent: 350,
+                                            mainAxisExtent: 300,
                                           ),
                                       physics: NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
@@ -1720,14 +1789,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   0xffFAFAFA,
                                                 ).withOpacity(0.1),
                                               ],
-                                              begin:
-                                                  index >= 3
-                                                      ? Alignment.bottomCenter
-                                                      : Alignment.topCenter,
-                                              end:
-                                                  index >= 3
-                                                      ? Alignment.topCenter
-                                                      : Alignment.bottomCenter,
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
                                             ),
                                             child: Column(
                                               crossAxisAlignment:
@@ -1777,7 +1840,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                         text:
                                                             product[index]['title'],
                                                         style: TextStyle(
-                                                          fontSize: 20,
+                                                          fontSize: 24,
                                                           fontWeight:
                                                               FontWeight.w600,
                                                           fontFamily:
@@ -1794,7 +1857,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                                   product[index]['description'],
                                                   textAlign: TextAlign.start,
                                                   style: TextStyle(
-                                                    fontSize: 15,
+                                                    fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                     fontFamily:
                                                         GoogleFonts.manrope()
@@ -1829,7 +1892,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Join ',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 32,
+                                                  letterSpacing: -1,
+                                                  fontSize: 36,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -1837,7 +1901,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Our ',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 32,
+                                                  letterSpacing: -1,
+                                                  fontSize: 36,
                                                   color: AppTheme.buttonColor,
                                                 ),
                                           ),
@@ -1845,7 +1910,8 @@ class _MobileScreenState extends State<MobileScreen> {
                                             text: 'Community',
                                             style:
                                                 AppTextStyle.communityTextStyle(
-                                                  fontSize: 32,
+                                                  letterSpacing: -1,
+                                                  fontSize: 36,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -1862,7 +1928,7 @@ class _MobileScreenState extends State<MobileScreen> {
                                     'Be part of a unified space where people, projects, and operations thrive with AI-powered efficiency',
 
                                     style: AppTextStyle.communityTextTextStyle(
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       color: Colors.black,
                                     ),
                                     textAlign: TextAlign.center,
@@ -2103,14 +2169,16 @@ class _MobileScreenState extends State<MobileScreen> {
     required TextEditingController controller,
     String? Function(String?)? validator,
     int? maxLines = 1,
+    TextInputType? keyboardType,
   }) {
     return TextFormField(
       validator: validator,
       controller: controller,
       maxLines: maxLines,
+      keyboardType: keyboardType,
       style: TextStyle(
         fontFamily: GoogleFonts.manrope().fontFamily,
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
       decoration: InputDecoration(
@@ -2142,7 +2210,10 @@ class _MobileScreenState extends State<MobileScreen> {
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
         ),
-
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
+        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Color(0xff4184E1)),

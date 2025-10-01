@@ -12,7 +12,11 @@ class AppTextStyle {
   static TextStyle headingTextStyle({
     required Color? color,
     required double? fontSize,
+    double? letterSpacing,
+    double? height,
   }) => TextStyle(
+    letterSpacing: letterSpacing,
+    height: height,
     fontSize: fontSize,
     fontWeight: FontWeight.w500,
     fontFamily: GoogleFonts.gildaDisplay().fontFamily,
@@ -20,8 +24,11 @@ class AppTextStyle {
     color: color,
   );
 
-  static TextStyle contentTextStyle({required Color? color}) => TextStyle(
-    fontSize: 14,
+  static TextStyle contentTextStyle({
+    required Color? color,
+    double? fontSize,
+  }) => TextStyle(
+    fontSize: fontSize,
     fontWeight: FontWeight.w600,
     fontFamily: GoogleFonts.manrope().fontFamily,
     color: color,
@@ -45,7 +52,7 @@ class AppTextStyle {
   );
   static TextStyle container1TextStyle({required Color? color}) => TextStyle(
     fontFamily: GoogleFonts.manrope().fontFamily,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.w500,
     color: color,
   );
@@ -65,8 +72,12 @@ class AppTextStyle {
   static TextStyle communityTextStyle({
     required Color? color,
     required double? fontSize,
+    double? letterSpacing,
+    double? height,
   }) => TextStyle(
+    letterSpacing: letterSpacing,
     fontSize: fontSize,
+    height: height,
     fontWeight: FontWeight.w400,
     fontFamily: GoogleFonts.gildaDisplay().fontFamily,
     color: color,

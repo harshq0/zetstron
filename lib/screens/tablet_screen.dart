@@ -180,22 +180,26 @@ class _TabletScreenState extends State<TabletScreen> {
         return Form(
           key: _formKey,
           child: Dialog(
-            child: Container(
-              width: fullWidth / 1.5,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(26),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(26),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: fullWidth / 1.5,
+                maxHeight:
+                    MediaQuery.of(context).size.height * 0.9, // ⬅️ limit height
               ),
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // shrink to fit
                   children: [
                     RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: "Let's",
+                            text: "Let's ",
                             style: TextStyle(
                               fontFamily: GoogleFonts.manrope().fontFamily,
                               fontSize: 32,
@@ -217,7 +221,7 @@ class _TabletScreenState extends State<TabletScreen> {
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Full Name',
+                      "Full Name",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -226,19 +230,19 @@ class _TabletScreenState extends State<TabletScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
-                      hintText: 'Enter Full Name',
+                      keyboardType: TextInputType.name,
+                      hintText: 'Enter Your Name',
                       imagePath: 'assets/png/user.png',
                       controller: nameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your name'
+                                  : null,
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Contact Number',
+                      "Contact Number",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -247,19 +251,19 @@ class _TabletScreenState extends State<TabletScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
+                      keyboardType: TextInputType.number,
                       hintText: 'Enter Contact Number',
                       imagePath: 'assets/png/call.png',
                       controller: numberController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your contact number';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your contact number'
+                                  : null,
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Email Id',
+                      "Email Id",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -268,23 +272,22 @@ class _TabletScreenState extends State<TabletScreen> {
                     ),
                     SizedBox(height: 5),
                     contactField(
+                      keyboardType: TextInputType.emailAddress,
                       hintText: 'Enter Email ID',
                       imagePath: 'assets/png/mail.png',
                       controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
                           return 'Please enter your email';
-                        } else if (!RegExp(
-                          r'^[^@]+@[^@]+\.[^@]+',
-                        ).hasMatch(value)) {
-                          return 'Please enter a valid email address';
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                          return 'Enter a valid email';
                         }
                         return null;
                       },
                     ),
                     SizedBox(height: 20),
                     AutoSizeText(
-                      'Description',
+                      "Description",
                       style: TextStyle(
                         fontFamily: GoogleFonts.manrope().fontFamily,
                         fontSize: 15,
@@ -294,47 +297,45 @@ class _TabletScreenState extends State<TabletScreen> {
                     SizedBox(height: 5),
                     contactField(
                       maxLines: 3,
-                      hintText: 'Enter your descrtiption',
+                      hintText: 'Enter your message',
                       imagePath: '',
                       controller: descriptionController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
+                      validator:
+                          (v) =>
+                              (v == null || v.isEmpty)
+                                  ? 'Please enter your message'
+                                  : null,
                     ),
                     SizedBox(height: 30),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          if (_formKey.currentState!.validate()) {
-                            openGmailWeb(
-                              toEmail: 'vijayganesh1704@gmail.com',
-                              body: descriptionController.text,
-                              subject: bodyController.text,
-                            );
-                            Navigator.pop(context);
-                          }
-                        });
+                        if (_formKey.currentState!.validate()) {
+                          openGmailWeb(
+                            toEmail: 'vijayganesh1704@gmail.com',
+                            description: descriptionController.text,
+
+                            name: nameController.text,
+                            number: numberController.text,
+                            email: emailController.text,
+                          );
+                          Navigator.pop(context);
+                        }
                       },
                       child: Container(
-                        width: fullWidth,
+                        width: double.infinity,
                         decoration: BoxDecoration(
                           color: Color(0xffFE6225),
                           borderRadius: BorderRadius.circular(9),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          child: Center(
-                            child: AutoSizeText(
-                              "Let's Talk",
-                              style: TextStyle(
-                                fontFamily: GoogleFonts.manrope().fontFamily,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: Center(
+                          child: AutoSizeText(
+                            "Let's Talk",
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.manrope().fontFamily,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -352,20 +353,39 @@ class _TabletScreenState extends State<TabletScreen> {
 
   Future<void> openGmailWeb({
     required String toEmail,
-    required String subject,
-    required String body,
+    required String description,
+    required String name,
+    required String number,
+    required String email, // sender email
   }) async {
+    // Build body with extra details
+    final String fullBody = """
+Hi Team,
+
+$description
+
+---
+Sender Details:
+Name   : $name
+Number : $number
+Email  : $email
+""";
+
     final Uri gmailUrl = Uri.parse(
       'https://mail.google.com/mail/?view=cm&fs=1'
       '&to=$toEmail'
-      '&su=${Uri.encodeComponent(subject)}'
-      '&body=${Uri.encodeComponent(body)}',
+      '&body=${Uri.encodeComponent(fullBody)}',
     );
 
     if (await canLaunchUrl(gmailUrl)) {
       await launchUrl(gmailUrl, mode: LaunchMode.externalApplication);
+      emailController.clear();
+      nameController.clear();
+      numberController.clear();
+      descriptionController.clear();
+      bodyController.clear();
     } else {
-      throw 'Could not open Gmail';
+      throw '❌ Could not open Gmail';
     }
   }
 
@@ -455,185 +475,172 @@ class _TabletScreenState extends State<TabletScreen> {
                     children: [
                       SizedBox(height: 50),
                       Stack(
+                        alignment:
+                            Alignment.center, // centers children by default
                         children: [
-                          Center(
-                            child: Image.asset(
-                              'assets/png/z-logo.png',
-                              height: title == 'Home' ? 280 : 220,
-                            ),
-                          ),
-                          Positioned(
-                            left:
-                                (title == 'Our Products' || title == 'Services')
-                                    ? fullWidth * 0.25
-                                    : (title == 'About Us' ||
-                                        title == 'Contact Us')
-                                    ? fullWidth * 0.29
-                                    : fullWidth * 0.15,
-                            top:
-                                (title == 'Our Products' || title == 'Services')
-                                    ? 50
-                                    : fullHeight * 0.1,
-                            child:
-                                title == 'Our Products'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Our ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
+                          // Background image
+                          Image.asset('assets/png/z-logo.png', height: 300),
 
-                                                  color: Colors.black,
-                                                ),
+                          // Overlay text in center
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40.0,
+                            ), // optional spacing
+                            child: Column(
+                              mainAxisSize:
+                                  MainAxisSize
+                                      .min, // keeps it compact, not full height
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                if (title == 'Our Products')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Our ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
                                           ),
-                                          TextSpan(
-                                            text: 'Products',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Products ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Color(0xffFE6225),
                                           ),
-                                          TextSpan(
-                                            text:
-                                                'to Power\nYour Digital Journey.',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
-
-                                                  color: Colors.black,
-                                                ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'to Power\nYour Digital Journey.',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
                                           ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'Services'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Our ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Services',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                'to Power\nYour Digital Journey.',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 45,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'Contact Us'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Contact',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Zetstron',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : title == 'About Us'
-                                    ? RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'About',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Zetstron',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 55,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    : RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: '        Accelerating ',
-
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 40,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text: 'Digital\nTransformation ',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 40,
-
-                                                  color: Color(0xffFE6225),
-                                                ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                'with AI, Cloud\n       & Product Innovation',
-                                            style:
-                                                AppTextStyle.headingTextStyle(
-                                                  fontSize: 40,
-
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
+                                  )
+                                else if (title == 'Services')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Our ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Services ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'to Power\nYour Digital Journey.',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else if (title == 'Contact Us')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Contact ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Zetstron',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else if (title == 'About Us')
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'About ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Zetstron',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Accelerating ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: 'Digital\nTransformation ',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'with AI, Cloud\n& Product Innovation',
+                                          style: AppTextStyle.headingTextStyle(
+                                            letterSpacing: -2,
+                                            fontSize: 50,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -647,6 +654,7 @@ class _TabletScreenState extends State<TabletScreen> {
                             : 'We, Zetstron, a lean and agile technology partner powered by our\nAI-driven platform. By combining lean operations with intelligent\nautomation, we position our clients ahead of the competition —\nenabling them to scale with confidence and clarity.',
                         textAlign: TextAlign.center,
                         style: AppTextStyle.contentTextStyle(
+                          fontSize: 16,
                           color: Color(0xff3A3A3A),
                         ),
                       ),
@@ -827,6 +835,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                         children: [
                                           AutoSizeText(
                                             'Dedicated Offshore Team\n(Staff Augmentation)',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.containerTextStyle(
                                                   fontSize: 25,
@@ -841,6 +850,7 @@ class _TabletScreenState extends State<TabletScreen> {
 
                                           AutoSizeText(
                                             'Access top-tier developers, architects, QA,\nand project managers — seamlessly\nintegrated into your workflows',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.container1TextStyle(
                                                   color: Color(0xffE9E9E9),
@@ -873,6 +883,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                               children: [
                                                 AutoSizeText(
                                                   'Fixed-Price Project',
+                                                  textAlign: TextAlign.center,
                                                   style:
                                                       AppTextStyle.containerTextStyle(
                                                         fontSize: 25,
@@ -886,6 +897,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                                 ),
                                                 AutoSizeText(
                                                   'Get results quickly with a short, fixed-\nprice project covering key features,\nmigrations, or proof-of-concepts.',
+                                                  textAlign: TextAlign.center,
                                                   style:
                                                       AppTextStyle.container1TextStyle(
                                                         color: Colors.black,
@@ -913,6 +925,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                         children: [
                                           AutoSizeText(
                                             'Managed Delivery',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.containerTextStyle(
                                                   fontSize: 25,
@@ -925,6 +938,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                           ),
                                           AutoSizeText(
                                             'Guaranteed outcomes with SLAs,\nproactive monitoring, and 24/7 support.',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.container1TextStyle(
                                                   color: Colors.black,
@@ -958,19 +972,26 @@ class _TabletScreenState extends State<TabletScreen> {
                                         children: [
                                           AutoSizeText(
                                             'White-Label Product\nEngineering)',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.containerTextStyle(
                                                   fontSize: 25,
                                                   color: Colors.white,
                                                 ),
                                           ),
-                                          Image.asset(
-                                            'assets/png/laptop.png',
-                                            height: 200,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 30.0,
+                                            ),
+                                            child: Image.asset(
+                                              'assets/png/laptop.png',
+                                              height: 200,
+                                            ),
                                           ),
 
                                           AutoSizeText(
                                             'End-to-end product development\nunder your brand — scale SaaS\nwithout scaling headcount.',
+                                            textAlign: TextAlign.center,
                                             style:
                                                 AppTextStyle.container1TextStyle(
                                                   color: Color(0xffE9E9E9),
@@ -1014,19 +1035,21 @@ class _TabletScreenState extends State<TabletScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: 'Ready',
+                                              text: 'Ready ',
                                               style:
                                                   AppTextStyle.communityTextStyle(
-                                                    fontSize: 50,
+                                                    letterSpacing: -2,
+                                                    fontSize: 60,
                                                     color: Color(0xffFE6225),
                                                   ),
                                             ),
                                             TextSpan(
                                               text:
-                                                  'to\nstart your journey\nwith us?',
+                                                  'to start your journey with us?',
                                               style:
                                                   AppTextStyle.communityTextStyle(
-                                                    fontSize: 50,
+                                                    letterSpacing: -2,
+                                                    fontSize: 60,
                                                     color: Colors.black,
                                                   ),
                                             ),
@@ -1037,7 +1060,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                       AutoSizeText(
                                         'Address: ',
                                         style: AppTextStyle.contactTextStyle(
-                                          fontSize: 20,
+                                          fontSize: 25,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1054,7 +1077,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                       AutoSizeText(
                                         'Contact Us',
                                         style: AppTextStyle.contactTextStyle(
-                                          fontSize: 20,
+                                          fontSize: 25,
                                           color: Colors.black,
                                         ),
                                       ),
@@ -1102,6 +1125,8 @@ class _TabletScreenState extends State<TabletScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.name,
                                                 hintText: 'Enter Your Name',
                                                 imagePath:
                                                     'assets/png/user.png',
@@ -1127,6 +1152,8 @@ class _TabletScreenState extends State<TabletScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 hintText:
                                                     'Enter Contact Number',
                                                 imagePath:
@@ -1153,6 +1180,8 @@ class _TabletScreenState extends State<TabletScreen> {
                                               ),
                                               SizedBox(height: 5),
                                               contactField(
+                                                keyboardType:
+                                                    TextInputType.emailAddress,
                                                 hintText: 'Enter Email ID',
                                                 imagePath:
                                                     'assets/png/mail.png',
@@ -1183,15 +1212,14 @@ class _TabletScreenState extends State<TabletScreen> {
                                               SizedBox(height: 5),
                                               contactField(
                                                 maxLines: 5,
-                                                hintText:
-                                                    'Enter your descrtiption',
+                                                hintText: 'Enter your message',
                                                 imagePath: '',
                                                 controller:
                                                     descriptionController,
                                                 validator: (value) {
                                                   if (value == null ||
                                                       value.isEmpty) {
-                                                    return 'Please enter description';
+                                                    return 'Please enter your message';
                                                   }
                                                   return null;
                                                 },
@@ -1203,15 +1231,20 @@ class _TabletScreenState extends State<TabletScreen> {
                                                     if (_formKey.currentState!
                                                         .validate()) {
                                                       openGmailWeb(
+                                                        email:
+                                                            emailController
+                                                                .text,
+                                                        name:
+                                                            nameController.text,
+                                                        number:
+                                                            numberController
+                                                                .text,
                                                         toEmail:
                                                             'vijayganesh1704@gmail.com',
-                                                        body:
+                                                        description:
                                                             descriptionController
                                                                 .text,
-                                                        subject:
-                                                            bodyController.text,
                                                       );
-                                                      Navigator.pop(context);
                                                     }
                                                   });
                                                 },
@@ -1560,113 +1593,143 @@ class _TabletScreenState extends State<TabletScreen> {
                               ? Container(
                                 width: fullWidth,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffF0F0F0),
+                                  color: Color(0xffFAF2EF),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 40.0,
-                                    horizontal: 40,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'We ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Build ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'With ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'Care',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Color(0xffFE6225),
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 40.0,
+                                        horizontal: 20,
                                       ),
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'We ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Colors.black,
-                                                  ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'We ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Build ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'With ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Care',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: 'Scale ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Color(0xffFE6225),
-                                                  ),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'We ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Scale ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'With ',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Colors.black,
+                                                      ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Clarity',
+                                                  style:
+                                                      AppTextStyle.headingTextStyle(
+                                                        letterSpacing: -2,
+                                                        fontSize: 40,
+                                                        color: Color(
+                                                          0xffFE6225,
+                                                        ),
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: 'With ',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Colors.black,
-                                                  ),
+                                          ),
+                                          SizedBox(height: 24),
+                                          AutoSizeText(
+                                            'Partnering with enterprises worldwide to drive transformation,\nfoster innovation, and help them scale and thrive through\nAgentic AI, cloud, and modern engineering.',
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  GoogleFonts.manrope()
+                                                      .fontFamily,
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                            TextSpan(
-                                              text: 'Clarity',
-                                              style:
-                                                  AppTextStyle.headingTextStyle(
-                                                    fontSize: 40,
-                                                    color: Color(0xffFE6225),
-                                                  ),
+                                          ),
+                                          SizedBox(height: 50),
+                                          AutoSizeText(
+                                            '- Vijay Ganesh CEO',
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  GoogleFonts.manrope()
+                                                      .fontFamily,
+                                              color: Color(0xffFE6225),
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 24),
-                                      AutoSizeText(
-                                        'Partnering with enterprises worldwide to drive transformation,\nfoster innovation, and help them scale and thrive through\nAgentic AI, cloud, and modern engineering.',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      SizedBox(height: 50),
-                                      AutoSizeText(
-                                        '- Vijay Ganesh CEO',
-                                        style: TextStyle(
-                                          color: Color(0xffFE6225),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    Image.asset(
+                                      'assets/png/vision-icon.png',
+                                      height: 310,
+                                    ),
+                                  ],
                                 ),
                               )
                               : SizedBox(),
@@ -1859,7 +1922,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: 'Join',
+                                              text: 'Join ',
                                               style:
                                                   AppTextStyle.communityTextStyle(
                                                     fontSize: 60,
@@ -1867,7 +1930,7 @@ class _TabletScreenState extends State<TabletScreen> {
                                                   ),
                                             ),
                                             TextSpan(
-                                              text: 'Our',
+                                              text: 'Our ',
                                               style:
                                                   AppTextStyle.communityTextStyle(
                                                     fontSize: 60,
@@ -2274,11 +2337,13 @@ class _TabletScreenState extends State<TabletScreen> {
     required TextEditingController controller,
     String? Function(String?)? validator,
     int? maxLines = 1,
+    TextInputType? keyboardType,
   }) {
     return TextFormField(
       validator: validator,
       controller: controller,
       maxLines: maxLines,
+      keyboardType: keyboardType,
       style: TextStyle(
         fontFamily: GoogleFonts.manrope().fontFamily,
         fontSize: 15,
@@ -2306,6 +2371,10 @@ class _TabletScreenState extends State<TabletScreen> {
           fontWeight: FontWeight.w500,
         ),
         errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: const Color.fromARGB(255, 237, 37, 23)),
         ),
