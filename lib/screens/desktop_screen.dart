@@ -414,7 +414,7 @@ Email  : $email
                     horizontal: 80,
                   ),
                   child: Row(
-                    spacing: 140,
+                    spacing: 180,
                     children: [
                       Image.asset('assets/png/zetstron-logo.png', height: 40),
                       Row(

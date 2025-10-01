@@ -417,9 +417,10 @@ Email  : $email
                     horizontal: 5,
                   ),
                   child: Row(
-                    spacing: 30,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/png/zetstron-logo.png', height: 35),
+
                       Row(
                         children: [
                           appBarText(
@@ -812,12 +813,12 @@ Email  : $email
                                 child: Column(
                                   children: [
                                     CustomContainer(
-                                      width: fullWidth / 1.6,
+                                      width: fullWidth / 1.4,
                                       padding: EdgeInsets.only(
-                                        top: 30,
-                                        left: 30,
-                                        right: 30,
-                                        bottom: 30,
+                                        top: 24,
+                                        left: 24,
+                                        right: 24,
+                                        bottom: 24,
                                       ),
                                       gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
@@ -845,7 +846,9 @@ Email  : $email
 
                                           Image.asset(
                                             'assets/png/team.png',
+
                                             height: 200,
+                                            colorBlendMode: BlendMode.modulate,
                                           ),
 
                                           AutoSizeText(
@@ -861,21 +864,21 @@ Email  : $email
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.6,
+                                      width: fullWidth / 1.4,
                                       padding: EdgeInsets.only(
-                                        top: 30,
-                                        left: 30,
-                                        right: 30,
-                                        bottom: 30,
+                                        top: 24,
+                                        left: 24,
+                                        right: 24,
+                                        bottom: 24,
                                       ),
                                       color: Color(0xffF0F0F0),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 30.0,
+                                              horizontal: 0.0,
                                             ),
                                             child: Column(
                                               crossAxisAlignment:
@@ -911,12 +914,12 @@ Email  : $email
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.6,
+                                      width: fullWidth / 1.4,
                                       padding: EdgeInsets.only(
-                                        top: 30,
-                                        left: 30,
-                                        right: 30,
-                                        bottom: 30,
+                                        top: 24,
+                                        left: 24,
+                                        right: 24,
+                                        bottom: 24,
                                       ),
                                       color: Color(0xffF0F0F0),
                                       child: Column(
@@ -949,12 +952,12 @@ Email  : $email
                                     ),
                                     SizedBox(height: 20),
                                     CustomContainer(
-                                      width: fullWidth / 1.6,
+                                      width: fullWidth / 1.4,
                                       padding: EdgeInsets.only(
-                                        top: 30,
-                                        left: 30,
-                                        right: 30,
-                                        bottom: 30,
+                                        top: 24,
+                                        left: 24,
+                                        right: 24,
+                                        bottom: 24,
                                       ),
                                       gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
@@ -979,14 +982,9 @@ Email  : $email
                                                   color: Colors.white,
                                                 ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 30.0,
-                                            ),
-                                            child: Image.asset(
-                                              'assets/png/laptop.png',
-                                              height: 200,
-                                            ),
+                                          Image.asset(
+                                            'assets/png/laptop.png',
+                                            height: 200,
                                           ),
 
                                           AutoSizeText(

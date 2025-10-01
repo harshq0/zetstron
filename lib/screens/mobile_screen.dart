@@ -794,7 +794,7 @@ Email  : $email
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
@@ -852,7 +852,7 @@ Email  : $email
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
@@ -894,7 +894,7 @@ Email  : $email
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+
                                       CustomContainer(
                                         width: fullWidth / 1.2,
                                         padding: EdgeInsets.only(
@@ -1080,7 +1080,7 @@ Email  : $email
                                               contactField(
                                                 keyboardType:
                                                     TextInputType.name,
-                                                hintText: 'Enter Full Name',
+                                                hintText: 'Enter Your Name',
                                                 imagePath:
                                                     'assets/png/user.png',
                                                 controller: nameController,
@@ -1302,7 +1302,7 @@ Email  : $email
                                             crossAxisSpacing: 26,
                                             mainAxisSpacing: 20,
                                             // childAspectRatio: serviceHeight,
-                                            mainAxisExtent: 460,
+                                            mainAxisExtent: 485,
                                           ),
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: services.length,
