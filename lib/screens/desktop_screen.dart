@@ -1984,8 +1984,14 @@ Email  : $email
                                                   : Alignment.bottomCenter,
                                         ),
                                         child: Column(
+                                          mainAxisAlignment:
+                                              index >= 3
+                                                  ? MainAxisAlignment.end
+                                                  : MainAxisAlignment.start,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              index >= 3
+                                                  ? CrossAxisAlignment.start
+                                                  : CrossAxisAlignment.start,
                                           children: [
                                             Container(
                                               height: 60,
