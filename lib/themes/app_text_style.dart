@@ -52,7 +52,7 @@ class AppTextStyle {
   );
   static TextStyle container1TextStyle({required Color? color}) => TextStyle(
     fontFamily: GoogleFonts.manrope().fontFamily,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: FontWeight.w500,
     color: color,
   );

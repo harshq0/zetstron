@@ -125,37 +125,37 @@ class _DesktopScreenState extends State<DesktopScreen> {
       'imagePath': 'assets/png/z-product.png',
       'title': 'Tag',
       'description':
-          'AI-powered recruitment that simplifies hiring and accelerates onboarding',
+          'AI-powered recruitment that simplifies\nhiring and accelerates onboarding',
     },
     {
       'imagePath': 'assets/png/z-product.png',
       'title': 'Employee',
       'description':
-          'Central hub to manage, track, and empower your workforce.',
+          'Central hub to manage, track, and\nempower your workforce.',
     },
     {
       'imagePath': 'assets/png/z-product.png',
       'title': 'Projects',
       'description':
-          '360° visibility across projects in Telecom, Retail, Banking, and more.',
+          '360° visibility across projects in\nTelecom, Retail, Banking, and more.',
     },
     {
       'imagePath': 'assets/png/z-product.png',
       'title': 'HR',
       'description':
-          'Streamlined HR operations from payroll to performance management.',
+          'Streamlined HR operations from\npayroll to performance management.',
     },
     {
       'imagePath': 'assets/png/z-product.png',
       'title': 'Customer',
       'description':
-          'Unified client repository to manage relationships and boost engagement.',
+          'Unified client repository to manage\nrelationships and boost engagement.',
     },
     {
       'imagePath': 'assets/png/z-product.png',
       'title': 'Models',
       'description':
-          'Seamless integration with AI tools like Copilot and ChatGPT for faster outcomes.',
+          'Seamless integration with AI tools like\nCopilot and ChatGPT for faster outcomes.',
     },
   ];
 
@@ -1703,7 +1703,34 @@ Email  : $email
                                   'assets/png/vision-mission.png',
                                   height: 900,
                                   width: fullWidth,
-                                  // fit: BoxFit.contain,
+                                  frameBuilder: (
+                                    BuildContext context,
+                                    Widget child,
+                                    int? frame,
+                                    bool wasSynchronouslyLoaded,
+                                  ) {
+                                    if (wasSynchronouslyLoaded) {
+                                      return child;
+                                    }
+                                    if (frame == null) {
+                                      // Still loading → show loader
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xffFE6225),
+                                        ),
+                                      );
+                                    } else {
+                                      // ✅ Image loaded → fade in
+                                      return AnimatedOpacity(
+                                        opacity: 1,
+                                        duration: const Duration(
+                                          seconds: 1,
+                                        ), // slow fade
+                                        curve: Curves.easeInOut,
+                                        child: child,
+                                      );
+                                    }
+                                  },
                                 ),
                               )
                               : SizedBox(),

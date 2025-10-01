@@ -395,7 +395,7 @@ Email  : $email
                             // Overlay text in center
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 40.0,
+                                horizontal: 20.0,
                               ), // optional spacing
                               child: Column(
                                 mainAxisSize:
@@ -537,7 +537,7 @@ Email  : $email
                                             style:
                                                 AppTextStyle.headingTextStyle(
                                                   letterSpacing: -2,
-                                                  fontSize: 28,
+                                                  fontSize: 30,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -546,7 +546,7 @@ Email  : $email
                                             style:
                                                 AppTextStyle.headingTextStyle(
                                                   letterSpacing: -2,
-                                                  fontSize: 28,
+                                                  fontSize: 30,
                                                   color: Color(0xffFE6225),
                                                 ),
                                           ),
@@ -556,7 +556,7 @@ Email  : $email
                                             style:
                                                 AppTextStyle.headingTextStyle(
                                                   letterSpacing: -2,
-                                                  fontSize: 28,
+                                                  fontSize: 30,
                                                   color: Colors.black,
                                                 ),
                                           ),
@@ -711,7 +711,7 @@ Email  : $email
 
                                     style: AppTextStyle.headingTextStyle(
                                       letterSpacing: -1,
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       color: Color(0xffFE6225),
                                     ),
                                   ),
@@ -719,7 +719,7 @@ Email  : $email
                                     text: 'Engagement Models ',
                                     style: AppTextStyle.headingTextStyle(
                                       letterSpacing: -1,
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       color: Colors.black,
                                     ),
                                   ),
@@ -778,7 +778,7 @@ Email  : $email
                                               textAlign: TextAlign.center,
                                               style:
                                                   AppTextStyle.containerTextStyle(
-                                                    fontSize: 24,
+                                                    fontSize: 20,
                                                     color: Colors.white,
                                                   ),
                                             ),
@@ -1294,7 +1294,7 @@ Email  : $email
                                     horizontal: 20,
                                   ),
                                   child: SizedBox(
-                                    height: 4400,
+                                    height: 4700,
                                     child: GridView.builder(
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
@@ -1560,6 +1560,34 @@ Email  : $email
                                     'assets/png/vision-mission.png',
                                     // height: 800,
                                     fit: BoxFit.contain,
+                                    frameBuilder: (
+                                      BuildContext context,
+                                      Widget child,
+                                      int? frame,
+                                      bool wasSynchronouslyLoaded,
+                                    ) {
+                                      if (wasSynchronouslyLoaded) {
+                                        return child;
+                                      }
+                                      if (frame == null) {
+                                        // Still loading → show loader
+                                        return const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Color(0xffFE6225),
+                                          ),
+                                        );
+                                      } else {
+                                        // ✅ Image loaded → fade in
+                                        return AnimatedOpacity(
+                                          opacity: 1,
+                                          duration: const Duration(
+                                            seconds: 1,
+                                          ), // slow fade
+                                          curve: Curves.easeInOut,
+                                          child: child,
+                                        );
+                                      }
+                                    },
                                   ),
                                 )
                                 : SizedBox(),

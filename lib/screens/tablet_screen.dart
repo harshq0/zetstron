@@ -1581,6 +1581,34 @@ Email  : $email
                                   'assets/png/vision-mission.png',
                                   // height: 800,
                                   fit: BoxFit.contain,
+                                  frameBuilder: (
+                                    BuildContext context,
+                                    Widget child,
+                                    int? frame,
+                                    bool wasSynchronouslyLoaded,
+                                  ) {
+                                    if (wasSynchronouslyLoaded) {
+                                      return child;
+                                    }
+                                    if (frame == null) {
+                                      // Still loading → show loader
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xffFE6225),
+                                        ),
+                                      );
+                                    } else {
+                                      // ✅ Image loaded → fade in
+                                      return AnimatedOpacity(
+                                        opacity: 1,
+                                        duration: const Duration(
+                                          seconds: 1,
+                                        ), // slow fade
+                                        curve: Curves.easeInOut,
+                                        child: child,
+                                      );
+                                    }
+                                  },
                                 ),
                               )
                               : SizedBox(),
@@ -1822,14 +1850,8 @@ Email  : $email
                                                 0xffFAFAFA,
                                               ).withOpacity(0.1),
                                             ],
-                                            begin:
-                                                index >= 3
-                                                    ? Alignment.bottomCenter
-                                                    : Alignment.topCenter,
-                                            end:
-                                                index >= 3
-                                                    ? Alignment.topCenter
-                                                    : Alignment.bottomCenter,
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
