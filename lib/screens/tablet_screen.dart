@@ -418,10 +418,9 @@ Email  : $email
                     horizontal: 5,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Image.asset('assets/png/zetstron-logo.png', height: 35),
-
+                      SizedBox(width: 120),
                       Row(
                         children: [
                           appBarText(
@@ -1577,38 +1576,76 @@ Email  : $email
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 30.0,
                                 ),
-                                child: Image.asset(
-                                  'assets/png/vision-mission.png',
-                                  // height: 800,
-                                  fit: BoxFit.contain,
-                                  frameBuilder: (
-                                    BuildContext context,
-                                    Widget child,
-                                    int? frame,
-                                    bool wasSynchronouslyLoaded,
-                                  ) {
-                                    if (wasSynchronouslyLoaded) {
-                                      return child;
-                                    }
-                                    if (frame == null) {
-                                      // Still loading → show loader
-                                      return const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Color(0xffFE6225),
-                                        ),
-                                      );
-                                    } else {
-                                      // ✅ Image loaded → fade in
-                                      return AnimatedOpacity(
-                                        opacity: 1,
-                                        duration: const Duration(
-                                          seconds: 1,
-                                        ), // slow fade
-                                        curve: Curves.easeInOut,
-                                        child: child,
-                                      );
-                                    }
-                                  },
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/png/vision.png',
+                                      // height: 800,
+                                      fit: BoxFit.contain,
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int? frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        if (wasSynchronouslyLoaded) {
+                                          return child;
+                                        }
+                                        if (frame == null) {
+                                          // Still loading → show loader
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xffFE6225),
+                                            ),
+                                          );
+                                        } else {
+                                          // ✅ Image loaded → fade in
+                                          return AnimatedOpacity(
+                                            opacity: 1,
+                                            duration: const Duration(
+                                              seconds: 1,
+                                            ), // slow fade
+                                            curve: Curves.easeInOut,
+                                            child: child,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                    SizedBox(height: 30),
+                                    Image.asset(
+                                      'assets/png/mission.png',
+                                      // height: 800,
+                                      fit: BoxFit.contain,
+                                      frameBuilder: (
+                                        BuildContext context,
+                                        Widget child,
+                                        int? frame,
+                                        bool wasSynchronouslyLoaded,
+                                      ) {
+                                        if (wasSynchronouslyLoaded) {
+                                          return child;
+                                        }
+                                        if (frame == null) {
+                                          // Still loading → show loader
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xffFE6225),
+                                            ),
+                                          );
+                                        } else {
+                                          // ✅ Image loaded → fade in
+                                          return AnimatedOpacity(
+                                            opacity: 1,
+                                            duration: const Duration(
+                                              seconds: 1,
+                                            ), // slow fade
+                                            curve: Curves.easeInOut,
+                                            child: child,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
                                 ),
                               )
                               : SizedBox(),
